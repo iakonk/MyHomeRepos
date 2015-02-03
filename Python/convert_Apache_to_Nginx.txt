@@ -1,40 +1,131 @@
+#!/bin/env python
 
+from re import search
+from glob import glob
+import os.path
+from os import remove
+from commands import getoutput
+import hashlib
+from sys import exit
 
-apache_conf= open('/home/iana/vhosts.conf', 'r')
-nginx_conf = open('/home/iana/nginx_vhosts.conf', 'w')
-server_name = ''
+vhosts_watch = '/etc/httpd/conf/vhosts.conf'
+nginx_config = '/etc/nginx/conf.d/virtual.conf'
+php_fpm_pool = '/etc/php-fpm.d/'
+md5log = '/tmp/httpd_vhosts_log'
+socket = {}
 
-for line in apache_conf:
-    if line.startswith('<VirtualHost *:80>'):
-        print ('server {\n' + '\t' + 'listen 80;')
-    elif line.startswith(' ServerName'):
-        new_line = line.split('ServerName')
-        server_name = 'server_name' + new_line[1].rstrip('\n')
-    elif line.startswith(' ServerAlias'):
-        new_line = line.split('ServerAlias')
-        server_name = server_name + new_line[1].rstrip('\n') + ';'
-        print ('\t' + server_name),
-    #elif line.startswith(' ServerAdmin'):
-    elif line.startswith(' DocumentRoot'):
-        new_line = line.split('DocumentRoot')
-        print ('\n' + '\t' + 'root '+ new_line[1].rstrip('\n') + ';')
-    elif line.startswith(' ErrorLog'):
-        new_line = line.split('ErrorLog')
-        print ('\t' + 'error_log '+ new_line[1].rstrip('\n') + ';')
-    #elif line.startswith(' <Directory'):
-     #   new_line = line.split('ErrorLog')
-      #  print ('\t' + 'error_log '+ new_line[1] + ';')
-    #elif line.startswith('  Options'):
-    #elif line.startswith('  AddHandler'):
-    #elif line.startswith('  FCGIWrapper'):
-    #elif line.startswith(' ScriptAlias'):
-    #elif line.startswith(' SuexecUserGroup'):
-    #elif line.startswith(' DefaultInitEnv'):
-    #elif line.startswith(' IPCCommTimeout'):
-    #elif line.startswith('</VirtualHost>'):
-        print ('\n' +'\tlocation / {' + '\n' + '\ttry_files' +'\t$uri $uri/ =404;' + '\n' + '\t' +'\t'+ '\t}')
-        print ('\n' +'\tlocation ~ \.php$ {' + '\n'+'\tfastcgi_pass   127.0.0.1:8000;' + \
-            '\n' + '\tfastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;' + \
-            '\n' + '\tinclude        fastcgi_params;' + \
-            '\n' + '\t' + '\t' + '\t}')
-        print '}\n'
+def md5Checksum(filePath):
+    with open(filePath, 'rb') as fh:
+        m = hashlib.md5()
+        while True:
+            data = fh.read(8192)
+            if not data:
+                break
+            m.update(data)
+        return m.hexdigest()
+
+# Check that old /etc/httpd/conf/vhosts.conf changed
+# if changed - write new md5 to the log , covert vhosts to virtual , create new PHP-FPM configs or remove old one, add nginx to service group or remove
+# exit otherwise
+if not os.path.exists(md5log):
+   md5log_write = open(md5log, 'w').close()
+
+lines = [line.rstrip() for line in open(md5log)]
+if not lines:
+   md5log_write = open(md5log, 'w')
+   md5log_write.write('0000')
+   md5log_write.close()
+   lines = [line.rstrip() for line in open(md5log)]
+
+if md5Checksum(vhosts_watch) != lines[0]:
+   print (vhosts_watch + " file changed")
+   md5log_write = open(md5log, 'w')
+   md5log_write.write(md5Checksum(vhosts_watch))
+   md5log_write.close()
+   # Convert /etc/httpd/conf/vhosts.conf to /etc/nginx/conf.d/virtual.conf
+   vhosts_file = open(vhosts_watch, 'r')
+   virtual_nginx = open(nginx_config, 'w')
+   print ('\nConverting apache to nginx..')
+   for line in vhosts_file:
+   	if search(r'<VirtualHost',line):
+        	virtual_nginx.write('\nserver {\n' + '\tlisten\t' + '127.0.0.1:' + line.split(':')[1].split('\n')[0].split('>')[0] + ';')
+
+	if search(r'ServerAlias',line):
+        	virtual_nginx.write('\n\tserver_name\t' + line.split('ServerAlias')[1].split('\n')[0] + ';')
+
+        if search(r'DocumentRoot',line):
+        	virtual_nginx.write('\n\troot\t' + line.split()[1] +';' + \
+            	'\n\tcharset utf-8;' + \
+            	'\n\tinclude global/*.conf;')
+
+	if search(r'ErrorLog', line):
+        	virtual_nginx.write('\n\terror_log\t' + line.split()[1] + ';')
+
+	if search(r'uexecUserGroup', line):
+        	user = line.split()[1].split('\n')[0]
+	        group = line.split()[2].split('\n')[0]
+	        socket[user] = group
+    	if search(r'</VirtualHost>', line):
+        	virtual_nginx.write('\n\trewrite ^/(.+\.php)$ /$1 last;\n' + \
+        	'\n\tlocation ~ \.php$ {\n' + \
+	        '\t\tfastcgi_pass unix:/var/run/' + user +'.sock;\n' + \
+	        '\t\tfastcgi_split_path_info ^(.+\.php)(/.*)$;\n' + \
+	        '\t\tinclude fastcgi_params;\n' + \
+	        '\t\tfastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n' + \
+	        '\t\tfastcgi_param HTTPS off;\n' + \
+	        '\t\tinternal;\n' + '\t}\n' + \
+	        '}')
+   vhosts_file.close()
+   virtual_nginx.close()
+
+   #  Create new socket if not exists
+   print ('\nChecking if new PHP-FPM socket should be created..')
+   for key, val in socket.iteritems():
+   	php_fpm_dir = php_fpm_pool + key +'.conf'
+    	if not os.path.exists(php_fpm_dir):
+       		print('...Creating new socket  ' + php_fpm_dir)
+	        new_php_fpm = open(php_fpm_dir, 'w')
+	        new_php_fpm.write('\n; Start a new pool named '+ key  +\
+	            '\n[' + key +']\n\n' +\
+	            '\nuser         = '+ key +\
+	            '\ngroup        = ' + val +\
+	            '\nlisten.mode  = 0660'+\
+	            '\nlisten.owner = ' + key +\
+	            '\nlisten.group = ' + val +\
+	            '\nlisten       = /var/run/' + key +'.sock'  +\
+	            '\npm           = dynamic\n\n'+\
+	            '\npm.start_servers         = 3'+\
+	            '\npm.max_children          = 5'+\
+	            '\npm.process_idle_timeout  = 10s'+\
+	            '\npm.max_requests          = 500'+\
+	            '\npm.min_spare_servers     = 2'+\
+	            '\npm.max_spare_servers     = 5'+\
+	            '\npm.max_requests          = 200'+\
+	            '\nrequest_terminate_timeout = 40s'+\
+	            '\nrlimit_files             = 131072'+\
+	            '\nrlimit_core              = unlimited'+\
+          	    '\ncatch_workers_output     = yes'+\
+	            '\nenv[HOSTNAME]            = $HOSTNAME'+\
+	            '\nenv[TMP]                 = /tmp'+\
+	            '\nenv[TMPDIR]              = /tmp'+\
+	            '\nenv[TEMP]                = /tmp\n' )
+        	new_php_fpm.close()
+   	        print getoutput('usermod -a -G ' + val + ' nginx')
+   print ('All socket exist!')
+
+   # Remove old socket files
+   print ('\nChecking already existing PHP-FPM sockets...')
+   for file in  glob(php_fpm_pool + "*.conf"):
+   	existing_socket = file.split(php_fpm_pool)[1].split('.conf')[0]
+	if existing_socket not in socket.keys():
+        	print ('Old socket found and removed ' + file)
+	        remove(file)
+	        print ("Removing nginx from group " + existing_socket.split('-www')[0]+'-grp')
+		print('gpasswd -d nginx  ' + existing_socket.split('-www')[0]+'-grp')
+	        print getoutput('gpasswd -d nginx  ' + existing_socket.split('-www')[0]+'-grp')
+
+   # Reload nginx
+   print getoutput('/usr/sbin/nginx -s reload')
+   print getoutput('/etc/init.d/php-fpm reload')
+else:
+    exit('Apache vhost file not changed, nothing to update')
