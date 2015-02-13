@@ -1,0 +1,26 @@
+; Start a new pool named $user_name
+[$user_name]
+
+user         = $user_name
+group        = $user_group
+listen.mode  = 0660
+listen.owner = $user_name
+listen.group = $user_group
+listen       = $user_socket
+pm           = dynamic
+
+pm.start_servers         = 3
+pm.max_children          = 5
+pm.process_idle_timeout  = 10s
+pm.max_requests          = 500
+pm.min_spare_servers     = 2
+pm.max_spare_servers     = 5
+pm.max_requests          = 200
+request_terminate_timeout = 40s
+rlimit_files             = 131072
+rlimit_core              = unlimited
+catch_workers_output     = yes
+env[HOSTNAME]            = $HOSTNAME
+env[TMP]                 = /tmp
+env[TMPDIR]              = /tmp
+env[TEMP]                = /tmp
