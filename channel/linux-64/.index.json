@@ -1,0 +1,92 @@
+{
+  "fontconfig-2.11.1-5.tar.bz2": {
+    "arch": "x86_64", 
+    "build": "5", 
+    "build_number": 5, 
+    "depends": [
+      "freetype 2.5.5", 
+      "libpng 1.6.17", 
+      "libxml2 2.9*"
+    ], 
+    "license": "BSD", 
+    "md5": "60e5dd53469cea7c2b706b135a5d99f6", 
+    "mtime": 1447077437.7585917, 
+    "name": "fontconfig", 
+    "platform": "linux", 
+    "requires": [
+      "freetype 2.5.5", 
+      "libpng 1.6.17", 
+      "libxml2 2.9.2"
+    ], 
+    "sig": null, 
+    "size": 411334, 
+    "subdir": "linux-64", 
+    "version": "2.11.1"
+  }, 
+  "nginx-1.9.5-1.tar.bz2": {
+    "arch": "x86_64", 
+    "build": "1", 
+    "build_number": 1, 
+    "depends": [
+      "openssl", 
+      "pcre", 
+      "zlib"
+    ], 
+    "license": "2-clause BSD-like license", 
+    "md5": "0c57a4c202fb472cd3bca937cb180552", 
+    "mtime": 1446123565.4657598, 
+    "name": "nginx", 
+    "platform": "linux", 
+    "sig": null, 
+    "size": 1748352, 
+    "subdir": "linux-64", 
+    "version": "1.9.5"
+  }, 
+  "pcre-8.31-0.tar.bz2": {
+    "arch": "x86_64", 
+    "build": "0", 
+    "build_number": 0, 
+    "md5": "248f455ca2086a7acebdcc63176d5a0d", 
+    "mtime": 1446123565.5017598, 
+    "name": "pcre", 
+    "platform": "linux", 
+    "requires": [], 
+    "sig": null, 
+    "size": 547282, 
+    "version": "8.31"
+  }, 
+  "txamqp-0.6.2-py27_0.tar.bz2": {
+    "arch": "x86_64", 
+    "build": "py27_0", 
+    "build_number": 0, 
+    "depends": [
+      "python 2.7*", 
+      "twisted"
+    ], 
+    "license": "UNKNOWN", 
+    "md5": "4590ffbd2be0ed56cffd378b9ae4f414", 
+    "mtime": 1447077403.726592, 
+    "name": "txamqp", 
+    "platform": "linux", 
+    "sig": null, 
+    "size": 36892, 
+    "version": "0.6.2"
+  }, 
+  "uwsgi-2.0.11.2-py27_0.tar.bz2": {
+    "arch": "x86_64", 
+    "build": "py27_0", 
+    "build_number": 0, 
+    "depends": [
+      "python 2.7*"
+    ], 
+    "license": "GPL2", 
+    "md5": "3692a5c5123e1d09071dc5de62ca30e2", 
+    "mtime": 1446123565.4777598, 
+    "name": "uwsgi", 
+    "platform": "linux", 
+    "sig": null, 
+    "size": 430626, 
+    "subdir": "linux-64", 
+    "version": "2.0.11.2"
+  }
+}
