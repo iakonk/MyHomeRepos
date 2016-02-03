@@ -1,2 +1,0 @@
-__version__ = '0.1'
-__description__ = 'Django project.  Space to share experience'
