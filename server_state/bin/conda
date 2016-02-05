@@ -1,0 +1,5 @@
+#!/apps/server_state/bin/python
+import sys
+from conda.cli import main
+
+sys.exit(main())
