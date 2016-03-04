@@ -1,9 +1,0 @@
-php -i
-phpinfo from the command line
-php -r phpinfo();
-
-Run the function phpinfo() on the shell
-php -r "phpinfo\(\);"
-
-echo "<?php phpinfo(); ?>" >> /srv/www/htdocs/test.php
-<?php echo Hello world ?> 
