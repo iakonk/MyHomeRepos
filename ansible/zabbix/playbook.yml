@@ -1,12 +1,13 @@
 ---
-# 
-
+# Playbook: 
+#	- copies python scripts to Zabbix Server
+# 	- executes scripts on Zabbix-Server machine to add new server for monitoring
 - name: Update zabbix config. 
   hosts:  
   user: root
   tasks:
     - name: Transfer the script "Host create"
-      copy: src=/etc/ansible/create_hetzner-host_in_zabbix dest=/tmp
+      copy: src=scripts dest=/tmp
       delegate_to: zabbix_server
 
     - name: Create host
