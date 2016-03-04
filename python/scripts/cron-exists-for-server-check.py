@@ -1,5 +1,7 @@
-# Script checks cron-job files on local machine
-
+"""
+Script checks cron-job files on a local machine
+Case - services should have cron
+"""
 import commands
 import psycopg2
 import os, sys

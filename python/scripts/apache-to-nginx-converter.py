@@ -13,7 +13,7 @@ nginx_config = '/etc/nginx/conf.d/virtual.conf'
 php_fpm_pool = '/etc/php-fpm.d/'
 
 nginx_virtual_tpl = '/etc/nginx/conf.d/nginx_virtual_tpl'
-php_pool_tpl = '/etc/php-fpm.d/php_pool_tpl'
+php_pool_tpl = 'apache-to-nginx-template-for-converter.tmpl'
 
 md5log = '/tmp/httpd_vhosts_log'
 socket = {}

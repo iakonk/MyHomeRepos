@@ -1,6 +1,6 @@
 #!/bin/env python
 """ 
-Script connects new dev PC to local.planetcontroller.com
+Script connects new dev PC to local application
 """
 import psycopg2
 import paramiko
