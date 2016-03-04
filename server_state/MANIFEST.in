@@ -1,6 +1,0 @@
-include README.rst
-include requirements.txt
-include *.py
-recursive-include templatetags *
-recursive-include server_state/static *
-recursive-include server_state/management *
