@@ -12,16 +12,16 @@ while read line
 do
 if [ "${line:0:1}" != "#"  ]; then
    if [ "${line}" == "$HOSTNAME" ]; then
-   cp ./expect.exp ./info.sh /tmp
+   cp ./expect.exp ./expect-info.sh /tmp
    chmod 777 /tmp/info.sh /tmp/expect.exp 
    /tmp/expect.exp
-   rm /tmp/info.sh /tmp/expect.exp
+   rm /tmp/expect-info.sh /tmp/expect.exp
 else
-  scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no info.sh expect.exp `sewhoami`@${line}:/tmp
+  scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no expect-info.sh expect.exp `sewhoami`@${line}:/tmp
     if [ $? -ne 0 ]; then   
        echo COPY to ${line} FAILED with code $? >> na_list.txt
     fi
-  ssh -n -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no `sewhoami`@${line}  "chmod 777 /tmp/info.sh /tmp/expect.exp; /tmp/expect.exp; rm /tmp/info.sh /tmp/expect.exp"
+  ssh -n -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no `sewhoami`@${line}  "chmod 777 /tmp/expect-info.sh /tmp/expect.exp; /tmp/expect.exp; rm /tmp/expect-info.sh /tmp/expect.exp"
     if [ $? -ne 0 ]; then
        echo  EXECUTION FAILED on ${line} with code $? >> na_list.txt
  fi

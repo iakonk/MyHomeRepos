@@ -1,1 +1,0 @@
-find . -name '***-www' -print0 | xargs -0 sed -i 's/"WHAT to fined"/Replace string/g'

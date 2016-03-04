@@ -1,6 +1,3 @@
-bash:
-bash> ./test /var
-listing:
 #!/bin/bash
 POSSIBLE_USERS=`cat /etc/passwd | cut -d":" -f 1`
 for user in $POSSIBLE_USERS; do
