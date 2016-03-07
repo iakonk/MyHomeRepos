@@ -1,0 +1,24 @@
+---
+- name: Install Graphite in conda virtual env
+  include: graphite.yml
+
+- name: Configure nginx, supervisord
+  template: src={{ item }} dest={{ install_prefix }}/etc/{{ item }} owner={{ ssh_user }}
+  with_items:
+     - ["nginx.conf", "supervisord.conf", "logrotate.conf"]
+
+- name: Configure User scripts
+  copy: src={{ item }} dest={{ install_prefix }}/bin/{{ item }} owner={{ ssh_user }} mode=0744
+  with_items:
+     - ["listen_for_changes.py", "create_symlinks.py"]
+
+- name: Check if Grafana installed
+  stat: path={{ install_prefix }}/grafana-2.5.0
+  register: grafana_installed
+
+- name: Install Grafana
+  unarchive: src=grafana-2.5.0.linux-x64.tar.gz dest={{ install_prefix }}/ owner={{ ansible_env.USER }} group={{ user_group.stdout_lines[0] }} mode=0755
+  when: grafana_installed.stat.exists == false
+
+- name: Create logrotate cron
+  cron: name="Rotate Graphite-Grafana logs" minute="0" hour="3" job="/usr/sbin/logrotate --state {{ install_prefix }}/log/logrotate.status {{ install_prefix }}/etc/logrotate.conf" state=present

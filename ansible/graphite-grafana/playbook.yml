@@ -1,0 +1,16 @@
+---
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+# Be sure you executed first:
+# ansible-galaxy install -r requirements.yml (modify requirements.yml with your idXXXXXX and password)
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+- hosts: graphite-grafana
+  remote_user: "{{ ssh_user }}"
+  roles:
+     - "{{ conda_role_path  }}"
+     - ../graphite-grafana
+     - "{{ supervisor_role_path  }}"
+
+  vars:
+     conda_role_path: /etc/ansible/conda
+     supervisor_role_path: /etc/ansible/supervisor
+     pypi_repo: https://pypi.python.org/pypi

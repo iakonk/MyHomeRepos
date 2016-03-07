@@ -1,0 +1,36 @@
+---
+- name: Get user primary group name
+  shell: id -g -n {{ ansible_env.USER }}
+  register: user_group
+
+- name: Configure logging dir
+  file: path={{ install_prefix }}/{{ item }} state=directory owner={{ ansible_env.USER }} group={{ user_group.stdout_lines[0] }} mode=0755
+  with_items:
+    - ["log/webapp", "var"]
+  ignore_errors: yes
+
+- name: Find site-packages dir
+  shell: "find {{ install_prefix }}/lib/ -type d -name site-packages"
+  register: site_packages 
+
+- name: Install pip dependencies And Graphite
+  shell: "{{ install_prefix }}/bin/pip install --upgrade {{ item }} --allow-all-external --trusted-host {{ ( pypi_repo.split('/') )[2] }} -i {{ pypi_repo }}"
+  with_items:
+    - ["django-tagging", "whitenoise", "watchdog"]
+    - "graphite-web --install-option='--prefix={{ install_prefix }}/' --install-option='--install-lib={{ site_packages.stdout_lines[0] }}/'"
+
+- name: Configure Graphite settings.py
+  template: src={{ item }} dest={{ site_packages.stdout_lines[0] }}/graphite/{{ item }} owner={{ ansible_env.USER }} group={{ user_group.stdout_lines[0] }} mode=0755
+  with_items:
+   - ["settings.py", "local_settings.py"]
+
+- name: Configure Graphite wsgi settings
+  file: force=yes src={{ install_prefix }}/conf/{{ item.src }} dest={{ install_prefix }}/conf/{{ item.dest }} state=link owner={{ ansible_env.USER }} group={{ user_group.stdout_lines[0] }}
+  with_items:
+    - { src: 'graphite.wsgi.example', dest: 'graphite.wsgi' }
+
+- name: Sync database
+  django_manage: command=syncdb app_path={{ site_packages.stdout_lines[0] }}/graphite settings=graphite.settings pythonpath={{ install_prefix }}/webapp virtualenv={{ install_prefix }}
+
+- name: Create new cronjob for supervisor at reboot
+  cron: name="Start supervisord to manage Graphite-Grafana" special_time=reboot  job="source {{ install_prefix }}/bin/activate root && {{ install_prefix }}/bin/supervisord -c {{ install_prefix }}/etc/supervisord.conf" state=present

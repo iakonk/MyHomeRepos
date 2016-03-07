@@ -1,0 +1,2 @@
+- src: http://idXXX:PASS@svn/svn/ansible/common/conda.tar.gz
+- src: http://idXXX:PASS@svn/svn/ansible/common/supervisor.tar.gz
