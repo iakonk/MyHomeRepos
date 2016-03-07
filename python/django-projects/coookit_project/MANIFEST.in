@@ -1,0 +1,7 @@
+include README.rst
+include requirements.txt
+include *.py
+recursive-include coookit/templates/article.html
+recursive-include coookit/templates/headers.html
+recursive-include coookit/templates/index.html
+recursive-include coookit/static *

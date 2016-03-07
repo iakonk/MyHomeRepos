@@ -1,0 +1,5 @@
+django==1.7
+easy_thumbnails
+django-summernote
+psycopg2
+pillow
