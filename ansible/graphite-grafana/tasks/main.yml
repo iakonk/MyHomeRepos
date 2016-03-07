@@ -13,11 +13,11 @@
      - ["listen_for_changes.py", "create_symlinks.py"]
 
 - name: Check if Grafana installed
-  stat: path={{ install_prefix }}/grafana-2.5.0
+  stat: path={{ install_prefix }}/grafana-latest
   register: grafana_installed
 
 - name: Install Grafana
-  unarchive: src=grafana-2.5.0.linux-x64.tar.gz dest={{ install_prefix }}/ owner={{ ansible_env.USER }} group={{ user_group.stdout_lines[0] }} mode=0755
+  unarchive: src=https://grafanarel.s3.amazonaws.com/builds/grafana-latest.linux-x64.tar.gz dest={{ install_prefix }}/ owner={{ ansible_env.USER }} group={{ user_group.stdout_lines[0] }} mode=0755
   when: grafana_installed.stat.exists == false
 
 - name: Create logrotate cron

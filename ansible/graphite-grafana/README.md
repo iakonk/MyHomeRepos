@@ -5,7 +5,7 @@ An Ansible role that deploys Graphite/Grafana application on Centos 6.x
 Deploy order:
   1) modify requirements.yml with your SVN username/password
   2) ansible-galaxy install -r requirements.yml
-  3) ansible-playbook -i hosts playbook.yml --ask-pass --ask-sudo
+  3) ansible-playbook -i hosts playbook.yml --ask-pass
 
 After successful installation, you  should be able to log in to:
 
@@ -34,7 +34,7 @@ Also, conda environment will use "python-rrdtool" package from system python (se
 Available variables are listed below, along with default values:
 		
 	ssh_user = yanko 
-	conda_packages  = 'django uwsgi nginx pip whisper python-ldap pyparsing pytz python-memcached libxml2 txamqp fontconfig py2cairo simplejson'
+	conda_packages  = 'django=1.7.1 uwsgi nginx pip whisper python-ldap pyparsing pytz python-memcached libxml2 txamqp fontconfig py2cairo simplejson'
 	install_prefix = '/opt/graphite'
 
 Modify "install_prefix", "ssh_user" variables in hosts file

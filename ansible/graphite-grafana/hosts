@@ -3,12 +3,11 @@
 # And variables that will be the same for  whole group
 #~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
 [graphite-grafana]
-#XXX.XXX.XXX.XXX
-192.168.122.216
+XXX.XXX.XXX.XXX
 
 [graphite-grafana:vars]
 ssh_user = yanko
-conda_packages  = 'django uwsgi nginx pip whisper python-ldap pyparsing pytz python-memcached libxml2 txamqp fontconfig py2cairo simplejson'
+conda_packages  = 'django=1.7.1 uwsgi nginx pip whisper python-ldap pyparsing pytz python-memcached libxml2 txamqp fontconfig py2cairo simplejson'
 install_prefix = '/opt/graphite'
 apps_rrd_path = '/opt/rrd/'
 graphite_rrd = '/opt/graphite/storage/rrd'

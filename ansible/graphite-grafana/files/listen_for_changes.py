@@ -4,10 +4,10 @@ On create: create corresponding file path and symlink
 Example for XXX.XXX-XXX.XXX.XXXX.rrd:
     On create:
         mkdir -p XXX/XXX/XXX/XXX
-        ln -s  source_path/XXX.XXX-XXX.XXX.XXX.rrd  dest_path/proviso/memory/HD/hd/2004795329.rrd
+        ln -s  source_path/XXX.XXX-XXX.XXX.XXX.rrd  dest_path/XXX/XXX/XXX/XXX/XXX.rrd
     On delete:
-        rm -rf dest_path/proviso/memory/HD/hd/2004795329.rrd
-        rm -rf dest_path/proviso if empty
+        rm -rf dest_path/XXX/XXX/XXX/XXX/XXX.rrd
+        rm -rf dest_path/XXX if empty
 
 Reference: http://pythonhosted.org/watchdog/
 Script arguments:

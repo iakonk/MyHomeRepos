@@ -3,9 +3,9 @@ Script splits files on ".",
 Creates dir structure for every part (except last two elements)
 Creates symlinks in /graphite_rrd for found files in /apps_rrd_path/*.rrd
 
-Example for proviso.memory-HD.hd.2004795329.rrd:
-        mkdir -p proviso/memory/HD/hd
-        ln -s  srce_path/proviso.memory.hd.2004795329.rrd  dest_path/proviso/memory/HD/hd/2004795329.rrd
+Example for XXX.XXX-XXX.XXX.XXX.rrd:
+        mkdir -p XXX/XXX/XXX/XXX
+        ln -s  srce_path/XXX.XXX.XXX.XXX.rrd  dest_path/XXX/XXX/XXX/XXX/XXX.rrd
 
 Script arguments:
     SOURCE_PATH - path to application *.rrd files
