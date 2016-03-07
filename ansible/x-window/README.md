@@ -1,6 +1,6 @@
 # Ansible Role: x-window
 
-An Ansible role that deploys x-window libs  on Centos 6.x
+An Ansible role that deploys x-window libs  on Centos 6.x. 
 Graphical clock window should appear  as a result of  xclock command after deployment finished.
 ## Requirements
 

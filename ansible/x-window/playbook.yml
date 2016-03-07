@@ -1,6 +1,6 @@
 #~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
 # Playbook installs minimal X Window libs on the target hosts
-# Cmd to start the installation : ansible-playbook -i hosts x-window.yml --ask-pass
+# Cmd to start the installation : cd x-window && ansible-playbook -i hosts x-window.yml --ask-pass
 # Requirements:
 #    - root or sudo password 
 #~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
