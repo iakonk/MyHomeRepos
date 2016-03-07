@@ -1,10 +1,10 @@
 """
 Listen for file created | deleted events in source_path directory
 On create: create corresponding file path and symlink
-Example for proviso.memory-HD.hd.2004795329.rrd:
+Example for XXX.XXX-XXX.XXX.XXXX.rrd:
     On create:
-        mkdir -p proviso/memory/HD/hd
-        ln -s  source_path/proviso.memory-HD.hd.2004795329.rrd  dest_path/proviso/memory/HD/hd/2004795329.rrd
+        mkdir -p XXX/XXX/XXX/XXX
+        ln -s  source_path/XXX.XXX-XXX.XXX.XXX.rrd  dest_path/proviso/memory/HD/hd/2004795329.rrd
     On delete:
         rm -rf dest_path/proviso/memory/HD/hd/2004795329.rrd
         rm -rf dest_path/proviso if empty
