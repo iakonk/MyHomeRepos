@@ -2,11 +2,11 @@
   {
     "item": {
       	"project": {
-        	"name": "ipop-iana"
+        	"name": "PROJECT-1"
       },
       "source_code_management": {
-	    	"package_root": "http://svn.bc/svn/ossrep/django/ipop2/trunk",
-        	"ansible_root": "http://svn.bc/svn/ossrep/ansible/ipop"
+	    	"package_root": "http://SVN/path/to/project",
+        	"ansible_root": "http://SVN/path/tp/ansible/playbook"
       }
     }
   },
@@ -14,11 +14,11 @@
   {
     "item": {
       	"project": {
-        	"name": "bics_tap_aggregator"
+        	"name": "PROJECT-2"
       },
       "source_code_management": {
-	    	"package_root": "http://svn.bc/svn/ossrep/packages/bics_tap_aggregator/trunk",
-        	"ansible_root": "http://svn.bc/svn/ossrep/ansible/bics_tap_aggregator"
+	    	"package_root": "http://SVN/path/to/project",
+        	"ansible_root": "http://SVN/path/tp/ansible/playbook"
       }
     }
   }
