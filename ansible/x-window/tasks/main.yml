@@ -1,0 +1,21 @@
+#	##################### 
+# Install "X Window", "Compatibility libraries", etc, in order to be able to execute graphical installers 
+#       #####################
+---
+- name: Install required packages (ignore if already installed)
+  yum: name={{ item }} state=present
+  with_items:
+   - "@X Window System"
+   - "@Desktop"
+   - "@Fonts"
+   - "@Compatibility libraries"
+   - xclock
+  ignore_errors: yes
+
+# Uncomment relevant lines in sshd config
+# Refrence for more details: http://www.straightrunning.com/XmingNotes/trouble.php
+- lineinfile: backrefs=yes state=present dest=/etc/ssh/sshd_config regexp='^#X11Forwarding'     line='X11Forwarding yes'
+- lineinfile: backrefs=yes state=present dest=/etc/ssh/sshd_config regexp='^#X11DisplayOffset'  line='X11DisplayOffset 10'
+- lineinfile: backrefs=yes state=present dest=/etc/ssh/sshd_config regexp='^#X11UseLocalhost'   line='X11UseLocalhost yes'
+- lineinfile: backrefs=yes state=present dest=/etc/ssh/sshd_config regexp='^#AddressFamily'     line='AddressFamily inet'
+  notify: Restart sshd
