@@ -13,7 +13,7 @@
      - ["listen_for_changes.py", "create_symlinks.py"]
 
 - name: Check if Grafana installed
-  stat: path={{ install_prefix }}/grafana-2.5.0
+  stat: path={{ install_prefix }}/grafana-latest
   register: grafana_installed
 
 - name: Install Grafana
