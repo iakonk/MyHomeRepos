@@ -75,8 +75,8 @@ def email2_moderator(request):
         auth_name = request.POST['auth_name']
         message = request.POST['message']
 
-        GMAIL_USER = 'konkina.iana@gmail.com'
-        GMAIL_PWD = 'G00gle123'
+        GMAIL_USER = '@gmail.com'
+        GMAIL_PWD = ''
         SUBJECT = 'Email sent from coookit , author: %s' % auth_name
 
         # Prepare actual message
