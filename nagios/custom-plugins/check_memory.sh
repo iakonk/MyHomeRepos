@@ -1,4 +1,7 @@
 # Redhat about memory usage: https://goo.gl/BCRZld 
+# Existing checks do a lot of calculations, or use perl module, that is not installed,
+# Or calculate memory usage in a wrong way (do not take into account buffers/cached)
+# Axample: https://exchange.nagios.org/directory/Plugins/System-Metrics/Memory/check_mem-2Esh/details
 #!/bin/bash
 
 USAGE="`basename $0` [-w|--warning]<percent free> [-c|--critical]<percent free>"
