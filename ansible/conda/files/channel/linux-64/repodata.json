@@ -1,0 +1,288 @@
+{
+  "info": {},
+  "packages": {
+    "cx_oracle-5.1.2-py27_0.tar.bz2": {
+      "build": "py27_0",
+      "build_number": 0,
+      "depends": [
+        "oracle-instantclient",
+        "python 2.7*"
+      ],
+      "md5": "33b6c4a466cba3960d07ca0ed9db2694",
+      "name": "cx_oracle",
+      "sig": null,
+      "size": 154874,
+      "version": "5.1.2"
+    },
+    "fontconfig-2.11.1-5.tar.bz2": {
+      "build": "5",
+      "build_number": 5,
+      "depends": [
+        "freetype 2.5.5",
+        "libpng 1.6.17",
+        "libxml2 2.9*"
+      ],
+      "license": "BSD",
+      "md5": "60e5dd53469cea7c2b706b135a5d99f6",
+      "name": "fontconfig",
+      "requires": [
+        "freetype 2.5.5",
+        "libpng 1.6.17",
+        "libxml2 2.9.2"
+      ],
+      "sig": null,
+      "size": 411334,
+      "subdir": "linux-64",
+      "version": "2.11.1"
+    },
+    "meld3-1.0.2-py27_0.tar.bz2": {
+      "build": "py27_0",
+      "build_number": 0,
+      "depends": [
+        "python 2.7*"
+      ],
+      "license": "BSD-derived (http://www.repoze.org/LICENSE.txt)",
+      "md5": "45e739ac2468d5507721c7316cf6a4a8",
+      "name": "meld3",
+      "requires": [
+        "python 2.7"
+      ],
+      "sig": null,
+      "size": 42570,
+      "version": "1.0.2"
+    },
+    "nagios-plugin-2.0-5.tar.bz2": {
+      "build": "5",
+      "build_number": 5,
+      "depends": [
+        "openssl"
+      ],
+      "md5": "8b6d0783dc673788089452f564ee6783",
+      "name": "nagios-plugin",
+      "sig": null,
+      "size": 3484626,
+      "subdir": "linux-64",
+      "version": "2.0"
+    },
+    "nginx-1.9.5-1.tar.bz2": {
+      "build": "1",
+      "build_number": 1,
+      "depends": [
+        "openssl",
+        "pcre",
+        "zlib"
+      ],
+      "license": "2-clause BSD-like license",
+      "md5": "0c57a4c202fb472cd3bca937cb180552",
+      "name": "nginx",
+      "sig": null,
+      "size": 1748352,
+      "subdir": "linux-64",
+      "version": "1.9.5"
+    },
+    "nrpe-2.14-5.tar.bz2": {
+      "build": "5",
+      "build_number": 5,
+      "depends": [
+        "openssl"
+      ],
+      "md5": "484ad81dcfa84ccd6fc2791a1146f3fb",
+      "name": "nrpe",
+      "sig": null,
+      "size": 520007,
+      "subdir": "linux-64",
+      "version": "2.14"
+    },
+    "openssl-1.0.2j-0.tar.bz2": {
+      "build": "0",
+      "build_number": 0,
+      "depends": [],
+      "license": "Apache-style",
+      "license_family": "Apache",
+      "md5": "1c4e45f6fd4bb96e50921dbc06107fe3",
+      "name": "openssl",
+      "requires": [],
+      "sig": null,
+      "size": 3326020,
+      "subdir": "linux-64",
+      "version": "1.0.2j"
+    },
+    "oracle-instantclient-11.2.0.4.0-0.tar.bz2": {
+      "build": "0",
+      "build_number": 0,
+      "depends": [],
+      "md5": "08eaff60b388ba680e2536950632f535",
+      "name": "oracle-instantclient",
+      "sig": null,
+      "size": 56614260,
+      "version": "11.2.0.4.0"
+    },
+    "pcre-8.31-0.tar.bz2": {
+      "build": "0",
+      "build_number": 0,
+      "depends": [],
+      "md5": "248f455ca2086a7acebdcc63176d5a0d",
+      "name": "pcre",
+      "requires": [],
+      "sig": null,
+      "size": 547282,
+      "version": "8.31"
+    },
+    "pip-9.0.1-py27_1.tar.bz2": {
+      "build": "py27_1",
+      "build_number": 1,
+      "depends": [
+        "python 2.7*",
+        "setuptools",
+        "wheel"
+      ],
+      "license": "MIT",
+      "md5": "f5266886d7cf83558b806762f2278145",
+      "name": "pip",
+      "sig": null,
+      "size": 1660956,
+      "subdir": "linux-64",
+      "version": "9.0.1"
+    },
+    "python-2.7.13-0.tar.bz2": {
+      "build": "0",
+      "build_number": 0,
+      "depends": [
+        "openssl 1.0.2*",
+        "readline 6.2",
+        "sqlite 3.13.*",
+        "tk 8.5.18",
+        "zlib 1.2.*"
+      ],
+      "license": "PSF",
+      "md5": "75517b0f5176e9cf704befa1cac3be23",
+      "name": "python",
+      "sig": null,
+      "size": 12039052,
+      "subdir": "linux-64",
+      "version": "2.7.13"
+    },
+    "readline-6.2-2.tar.bz2": {
+      "build": "2",
+      "build_number": 2,
+      "depends": [],
+      "md5": "d050607fb2934282470d06872e0e6cce",
+      "name": "readline",
+      "requires": [],
+      "sig": null,
+      "size": 620292,
+      "version": "6.2"
+    },
+    "setuptools-27.2.0-py27_0.tar.bz2": {
+      "build": "py27_0",
+      "build_number": 0,
+      "depends": [
+        "python 2.7*"
+      ],
+      "license": "MIT",
+      "md5": "96b639928547b4f837f7d4d1ed5f2d7e",
+      "name": "setuptools",
+      "sig": null,
+      "size": 533533,
+      "subdir": "linux-64",
+      "version": "27.2.0"
+    },
+    "sqlite-3.13.0-0.tar.bz2": {
+      "build": "0",
+      "build_number": 0,
+      "depends": [],
+      "license": "Public-Domain (http://www.sqlite.org/copyright.html)",
+      "license_family": "Public-Domain",
+      "md5": "ceb2d63b0dc2ec8a2e1da9378f07ab98",
+      "name": "sqlite",
+      "sig": null,
+      "size": 4167817,
+      "subdir": "linux-64",
+      "version": "3.13.0"
+    },
+    "supervisor-3.3.1-py27_0.tar.bz2": {
+      "build": "py27_0",
+      "build_number": 0,
+      "depends": [
+        "meld3 >=0.6.5",
+        "python 2.7*",
+        "setuptools"
+      ],
+      "license": "BSD-derived",
+      "license_family": "BSD",
+      "md5": "3c9f832893baf66a4e6c65c17bd201a0",
+      "name": "supervisor",
+      "sig": null,
+      "size": 416577,
+      "subdir": "linux-64",
+      "version": "3.3.1"
+    },
+    "tk-8.5.18-0.tar.bz2": {
+      "build": "0",
+      "build_number": 0,
+      "depends": [],
+      "license": "BSD-style",
+      "md5": "902f0fd689a01a835c9e69aefbe58fdd",
+      "name": "tk",
+      "requires": [],
+      "sig": null,
+      "size": 1960193,
+      "version": "8.5.18"
+    },
+    "txamqp-0.6.2-py27_0.tar.bz2": {
+      "build": "py27_0",
+      "build_number": 0,
+      "depends": [
+        "python 2.7*",
+        "twisted"
+      ],
+      "license": "UNKNOWN",
+      "md5": "4590ffbd2be0ed56cffd378b9ae4f414",
+      "name": "txamqp",
+      "sig": null,
+      "size": 36892,
+      "version": "0.6.2"
+    },
+    "uwsgi-2.0.11.2-py27_0.tar.bz2": {
+      "build": "py27_0",
+      "build_number": 0,
+      "depends": [
+        "python 2.7*"
+      ],
+      "license": "GPL2",
+      "md5": "3692a5c5123e1d09071dc5de62ca30e2",
+      "name": "uwsgi",
+      "sig": null,
+      "size": 430626,
+      "subdir": "linux-64",
+      "version": "2.0.11.2"
+    },
+    "wheel-0.29.0-py27_0.tar.bz2": {
+      "build": "py27_0",
+      "build_number": 0,
+      "depends": [
+        "python 2.7*"
+      ],
+      "license": "MIT",
+      "md5": "35cf0da93616ea8c495ce1d143316d7c",
+      "name": "wheel",
+      "sig": null,
+      "size": 82465,
+      "subdir": "linux-64",
+      "version": "0.29.0"
+    },
+    "zlib-1.2.8-3.tar.bz2": {
+      "build": "3",
+      "build_number": 3,
+      "depends": [],
+      "license": "zlib (http://zlib.net/zlib_license.html)",
+      "license_family": "Other",
+      "md5": "60d5ea874984e4c750f187a26c827382",
+      "name": "zlib",
+      "sig": null,
+      "size": 103236,
+      "subdir": "linux-64",
+      "version": "1.2.8"
+    }
+  }
+}

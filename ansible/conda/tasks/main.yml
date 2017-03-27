@@ -1,0 +1,117 @@
+---
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+# Check if conda installed on the remote host  && on 127.0.0.1 : install conda
+# Check, if environment already exists on the remote host
+# Get a list of already installed packages on the remote host
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+- name: Check if conda installed on the remote host
+  stat: path={{ install_prefix }}/bin/conda
+  register: conda_installed
+
+- name: Install conda on the remote host if not installed
+  script: Miniconda-latest-Linux-x86_64.sh -f -b -p {{ install_prefix }} 1>/dev/null
+  when: conda_installed.stat.exists == false
+
+- name: Get list of already installed packages on the remote host
+  shell: "{{ install_prefix }}/bin/conda list | awk '/^[^#]/{print $1}'"
+  when: conda_installed.stat.exists == true
+  register: already_installed_packages
+
+- name: Get list of updates
+  shell: echo {{ item }}
+  with_items:
+    - "{{ (conda_packages.split(' ')|union(['jinja2', 'supervisor', 'pip']))| difference(already_installed_packages.stdout_lines) }}"
+  when: already_installed_packages|changed
+  register: conda_updates
+
+- name: Remove /tmp/miniconda on 127.0.0.1 if updates were detected
+  local_action: file path=/tmp/miniconda state=absent
+  when: conda_installed.stat.exists == false or conda_updates|changed
+  ignore_errors: yes
+  sudo: no
+
+- name: Install conda on 127.0.0.1 if updates were detected
+  local_action: script Miniconda-latest-Linux-x86_64.sh -b -p /tmp/miniconda 1>/dev/null
+  when: conda_updates|changed or conda_installed.stat.exists == false
+  sudo: no
+  register: local_conda
+
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+# Create local conda environment
+# Install only new packages
+# Copy cached packages to the target
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+- name: Add new repo to a list of channels on 127.0.0.1 if updates were detected
+  local_action: "shell rm -rf ~/.condarc ; /tmp/miniconda/bin/conda config --add channels file:/{{ conda_role_path  }}/files/channel --force"
+  when: (conda_installed.stat.exists == false or conda_updates|changed)
+  sudo: no
+
+- name: Install all packages on 127.0.0.1
+  local_action: command /tmp/miniconda/bin/conda install {{ item }}  --yes
+  with_items:
+    - "{{ (conda_packages.split(' ')|union(['jinja2', 'supervisor', 'pip'])) }}"
+  when: conda_installed.stat.exists == false
+  sudo: no
+  register: new_conda_installation
+
+- name: Install only updates on 127.0.0.1
+  local_action: command /tmp/miniconda/bin/conda install {{ item }}  --yes
+  with_items:
+    - "{{ (conda_packages.split(' ')|union(['jinja2', 'supervisor', 'pip']))| difference(already_installed_packages.stdout_lines) }}"
+  when: conda_updates|changed
+  sudo: no
+
+- name: Archive cached packages on 127.0.0.1 before sending them to the remote host
+  local_action: command tar czf pkgs.tar.gz -C /tmp/miniconda/pkgs .
+  when: (new_conda_installation|changed or conda_updates|changed)
+  sudo: no
+
+- name: Get user primary group name
+  shell: id -g -n {{ ansible_env.USER }}
+  when: (new_conda_installation|changed or conda_updates|changed)
+  register: user_group
+
+- name: Copy cached packages to the remote host
+  unarchive: src=pkgs.tar.gz dest={{ install_prefix }}/pkgs/
+  when: (new_conda_installation|changed or conda_updates|changed)
+
+- name: Remove cached packages Archive from 127.0.0.1
+  local_action: file path=pkgs.tar.gz state=absent
+  when: (new_conda_installation|changed or conda_updates|changed)
+  sudo: no
+
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+# Configure conda repo on the remote host
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+- name: Copy additional conda repo to the remote host
+  copy: src=channel dest={{ install_prefix }}/
+  when: (new_conda_installation|changed or conda_updates|changed)
+
+- name: Add new repo to a list of channels on the remote host
+  shell: "rm -rf ~/.condarc ; {{ install_prefix }}/bin/conda config --add channels file:/{{ install_prefix }}/channel --force"
+  when: (new_conda_installation|changed or conda_updates|changed)
+
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+# Configure conda environment on the remote host
+#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#
+- name: Install all packages on the remote host
+  shell: "{{ install_prefix }}/bin/conda install {{ item }} --yes"
+  with_items:
+    - "{{ conda_packages.split(' ')|union(['jinja2', 'supervisor', 'pip']) }}"
+  when: new_conda_installation|changed
+
+- name: Install updates on the remote host
+  shell: "{{ install_prefix }}/bin/conda install {{ item }} --yes"
+  with_items:
+    - "{{ (conda_packages.split(' ')|union(['jinja2', 'supervisor', 'pip']))| difference(already_installed_packages.stdout_lines) }}"
+  when: conda_updates|changed
+
+- name: Create missing directories
+  file: path={{ install_prefix }}/{{ item }} state=directory mode=0744
+  with_items:
+    - ["var", "var/run", "log", "log/ARCHIVED_LOGS", "etc"]
+
+- name: Remove local conda from 127.0.0.1
+  local_action: file path=/tmp/miniconda state=absent
+  when: local_conda|changed
+  sudo: no
