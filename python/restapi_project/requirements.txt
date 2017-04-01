@@ -3,3 +3,4 @@ twisted
 pyopenssl
 PyYaml
 nomad
+txtemplate
