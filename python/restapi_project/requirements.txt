@@ -1,0 +1,5 @@
+sqlalchemy
+twisted
+pyopenssl
+PyYaml
+nomad
