@@ -4,7 +4,6 @@ import yaml
 import logging
 import os
 import signal
-import time
 
 import txtemplate
 
@@ -14,15 +13,11 @@ from twisted.web.resource import Resource
 
 from restapi_project.pools import create_pool
 from restapi_project import init_logging
+from restapi_project.db_actions import insert_action, select_action
 
 
 POOL_SIZE = 2
 TEMPLATE_DIR = os.path.join('restapi_project', "templates")
-
-
-class Response(object):
-    def __init__(self, lines):
-        self.lines = lines
 
 
 class AppUserRegForm(Resource):
@@ -34,25 +29,23 @@ class AppUserRegForm(Resource):
         self.db_filename = cfg['database']['filename']
         self.db_pool = create_pool(POOL_SIZE, self.db_filename)
         self.loader = txtemplate.Jinja2TemplateLoader(TEMPLATE_DIR)
-        self.log.debug('%s', TEMPLATE_DIR)
 
-    def _run_query(self, txn, sql):
-        ct = time.time()
-        txn.execute(sql)
-        columns = [i[0] for i in txn.description]
-        records_obj = Response([dict(zip(columns, row)) for row in txn.fetchall()])
-        self.log.debug('call: finished in %.4fs, %s records found in %s', time.time()-ct, len(records_obj.lines), self.table)
-        return records_obj
+        self.select_action = select_action.SelectAllAction(self.db_pool,
+                                                           self.table,
+                                                           ('id','f_name','l_name','email','phone','primary_skill'))
+        self.insert_action = insert_action.InsertAction(self.db_pool,
+                                                        self.table,
+                                                        ('f_name', 'l_name', 'email', 'phone', 'primary_skill'))
 
-    def run_query(self, sql):
-        self.log.info('Calling table : %s', self.table)
-        return self.db_pool.runInteraction(self._run_query, sql)
+    def write_response(self, content, request):
+        request.write(content)
+        request.setResponseCode(200)
+        request.finish()
 
-    def get_all_registrations(self, data_obj, request):
+    def get_all_registrations(self, data, request):
         template_name = "all_registrations.html"
         template = self.loader.load(template_name)
-
-        records = json.dumps(data_obj.lines)
+        records = json.dumps(data)
         d = template.render(records_list=records)
         d.addCallback(self.write_response, request)
 
@@ -60,7 +53,6 @@ class AppUserRegForm(Resource):
         template_name = "register.html"
         template = self.loader.load(template_name)
         context = {"greeting": "Hello"}
-
         d = template.render(**context)
         d.addCallback(self.write_response, request)
 
@@ -68,24 +60,34 @@ class AppUserRegForm(Resource):
         template_name = "home.html"
         template = self.loader.load(template_name)
         context = {"home": "home page"}
-
         d = template.render(**context)
         d.addCallback(self.write_response, request)
 
-    def write_response(self, content, request):
-        request.write(content)
-        request.setResponseCode(200)
-        request.finish()
-
     def render_GET(self, request):
-        if request.postpath[0] == 'all_registered':
-            sql = 'SELECT * FROM {}'.format(self.table)
-            res = self.run_query(sql)
+        if request.postpath[0] == 'all_registrations':
+            res = self.select_action()
             res.addCallback(self.get_all_registrations, request)
         elif request.postpath[0] == 'register':
             self.register(request)
         else:
             self.render_home_page(request)
+        return NOT_DONE_YET
+
+    def get_registration_result(self, data, request):
+        template_name = "registration_result.html"
+        template = self.loader.load(template_name)
+        context = {"home": "home page"}
+        d = template.render(**context)
+        d.addCallback(self.write_response, request)
+
+    def render_POST(self, request):
+        self.log.debug(request.__dict__)
+        res = self.insert_action(f_name=request.args['f_name'][0],
+                                 l_name=request.args['l_name'][0],
+                                 email=request.args['email'][0],
+                                 phone=request.args['phone'][0],
+                                 primary_skill=request.args['primary_skill'][0])
+        res.addCallback(self.get_registration_result, request)
         return NOT_DONE_YET
 
 
