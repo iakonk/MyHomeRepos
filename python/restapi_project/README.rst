@@ -9,7 +9,7 @@ N/A
 
 ### DB MIGRATIONS
 To initiate DB migration:
-        cd migrations;
-        ${PYENV_HOME}/bin/nomad init;
-        ${PYENV_HOME}/bin/nomad apply 0-initial
+        * cd migrations;
+        * ${PYENV_HOME}/bin/nomad init;
+        * ${PYENV_HOME}/bin/nomad apply 0-initial
 
