@@ -42,12 +42,16 @@ class AppUserRegForm(Resource):
         request.setResponseCode(200)
         request.finish()
 
+    def write_json_data(self, content, request):
+        request.write(json.dumps(content))
+        request.setResponseCode(200)
+        request.finish()
+
     def get_all_registrations(self, data, request):
         template_name = "all_registrations.html"
         template = self.loader.load(template_name)
-        records = json.dumps(data)
-        d = template.render(records_list=records)
-        d.addCallback(self.write_response, request)
+        d = template.render(records_list=data)
+        d.addCallback(self.write_json_data, request)
 
     def register(self, request):
         template_name = "register.html"
