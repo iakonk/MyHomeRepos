@@ -1,0 +1,8 @@
+application: event-registration
+version: 1
+runtime: python27
+entrypoint: restapi_project.app.app_user_form
+threadsafe: true
+handlers:
+- url: /
+  script: restapi_project.app.app_user_form
