@@ -18,6 +18,7 @@ class DeadLinksIdentifier(object):
         self.test_url_action = test_url_action.URLTester()
         self.dead_url_list = []
 
+    # this is a some kind of queue obj with X numbers of workers
     @defer.inlineCallbacks
     def find_dead_links(self, url_list, jobs):
         coop = task.Cooperator()
@@ -33,37 +34,39 @@ class DeadLinksIdentifier(object):
     def find_dead_url_generator(self, url_list):
         while url_list:
             one_url = url_list.pop()
-            yield self.test_one_url(one_url)
+            formatted_url = self.format_link(one_url)
+            yield self.test_one_url(formatted_url)
 
     @defer.inlineCallbacks
     def test_one_url(self, one_url):
+        # GET requests will not be started in parallel unless threads.deferToThread is used
+        # Or twsited spawnProcess
+        # so this part is slow .. it is a scope for improvement
         response_code = yield self.test_url_action(one_url)
         if not response_code:
+            # this is unhandled error
             self.dead_url_list.append(one_url)
-        if response_code == 404:
+        if str(response_code).startswith('4'):
+            # this is 4xx Client errors
+            self.dead_url_list.append(one_url)
+        if str(response_code).startswith('5'):
+            # this is 5xx Server error
             self.dead_url_list.append(one_url)
 
-    def find_all_links(self, html_doc):
-        links = []
-        for href in html_doc.href_attribs:
-            # follow local links
-            if href.startswith('/'):
-                link = self.url + href
-                links.append(link)
-            if not href.startswith('http'):
-                link = self.url + '/' + href
-                links.append(link)
-            # discard bookmarks
-            if href.startswith('#'):
-                continue
-        return links
+    def format_link(self, href):
+        # follow local links
+        if href.startswith('/'):
+            href = self.url + href
+        elif not href.startswith('http'):
+            href = self.url + '/' + href
+        return href
 
     @defer.inlineCallbacks
     def run(self):
         self.log.info('extracting all link from: %s', self.url)
         html_doc = yield self.parse_url_action(self.url)
-        links = self.find_all_links(html_doc)
-        self.log.info('found links to test: %s', len(links))
+        links = html_doc.links
+        self.log.info('found links to test: %s -> %s', len(links), links)
         yield self.find_dead_links(links, self.jobs)
         if self.dead_url_list:
             self.log.info('Found %s dead links: %s', len(self.dead_url_list), self.dead_url_list)

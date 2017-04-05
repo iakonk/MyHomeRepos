@@ -1,8 +1,7 @@
 import logging
 
-from twisted.web.client import Agent
+from twisted.web.client import Agent, RedirectAgent
 from twisted.internet import defer, task, reactor
-from twisted.internet.error import DNSLookupError
 
 
 class URLTester(object):
@@ -12,13 +11,16 @@ class URLTester(object):
     @defer.inlineCallbacks
     def __call__(self, url):
         self.log.debug('calling: GET -> %s', url)
-        agent = Agent(reactor)
+        agent = RedirectAgent(Agent(reactor))
         code = None
         try:
+            # State can be either OK
             response_obj = yield agent.request('GET', url)
             code = response_obj.code
             self.log.debug('response code: %s', code)
-        except DNSLookupError, err:
+        except Exception, err:
+            # Or state can fail due to any reason: timeouts, dns errors, etc
+            # I catch all errors
             self.log.error('call error: -> %s, reson: %s', url, err)
         defer.returnValue(code)
 
@@ -27,7 +29,7 @@ class URLTester(object):
 def main(_):
     logging.basicConfig(level=logging.DEBUG)
     test_url = URLTester()
-    code = yield test_url('http://bb.co')
+    code = yield test_url('http://yplanapp.com/og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#')
     print('Response code %s' % code)
 
 
