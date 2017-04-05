@@ -16,8 +16,8 @@ class URLTester(object):
         code = None
         try:
             response_obj = yield agent.request('GET', url)
-            self.log.debug('headers received: %s', response_obj.headers)
             code = response_obj.code
+            self.log.debug('response code: %s', code)
         except DNSLookupError, err:
             self.log.error('call error: -> %s, reson: %s', url, err)
         defer.returnValue(code)

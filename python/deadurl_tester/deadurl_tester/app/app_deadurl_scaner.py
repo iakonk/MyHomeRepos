@@ -5,6 +5,7 @@ import argparse
 
 from twisted.internet import defer, task
 
+from deadurl_tester import init_logging
 from deadurl_tester.actions import test_url_action, parse_url_action
 
 
@@ -42,14 +43,32 @@ class DeadLinksIdentifier(object):
         if response_code == 404:
             self.dead_url_list.append(one_url)
 
+    def find_all_links(self, html_doc):
+        links = []
+        for href in html_doc.href_attribs:
+            # follow local links
+            if href.startswith('/'):
+                link = self.url + href
+                links.append(link)
+            if not href.startswith('http'):
+                link = self.url + '/' + href
+                links.append(link)
+            # discard bookmarks
+            if href.startswith('#'):
+                continue
+        return links
+
     @defer.inlineCallbacks
     def run(self):
         self.log.info('extracting all link from: %s', self.url)
-        links = yield self.parse_url_action(self.url)
+        html_doc = yield self.parse_url_action(self.url)
+        links = self.find_all_links(html_doc)
         self.log.info('found links to test: %s', len(links))
         yield self.find_dead_links(links, self.jobs)
         if self.dead_url_list:
             self.log.info('Found %s dead links: %s', len(self.dead_url_list), self.dead_url_list)
+        else:
+            self.log.debug('No dead links found')
 
 
 @defer.inlineCallbacks
@@ -63,9 +82,11 @@ def main(reactor, args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', action='append_const', const=1)
+    parser.add_argument('-l', '--logdir', default='./', required=False)
     parser.add_argument('-j', '--jobs', default=4, type=int, required=False)
     parser.add_argument('-u', '--url', required=True)
     args = parser.parse_args()
+    init_logging(args)
     try:
         task.react(main, [args])
     finally:

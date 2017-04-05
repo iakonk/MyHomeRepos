@@ -1,0 +1,7 @@
+include *.txt
+include *.py
+
+recursive-include deadurl_tester/app *
+recursive-include deadurl_tester/actions *
+
+global-exclude *.pyc
