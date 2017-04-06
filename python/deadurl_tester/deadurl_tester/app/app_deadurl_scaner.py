@@ -6,7 +6,7 @@ import argparse
 from twisted.internet import defer, task
 
 from deadurl_tester import init_logging
-from deadurl_tester.actions import test_url_action, parse_url_action
+from deadurl_tester.actions import test_url_action, extract_links_action
 
 
 class DeadLinksIdentifier(object):
@@ -14,7 +14,7 @@ class DeadLinksIdentifier(object):
         self.log = logging.getLogger(self.__class__.__name__)
         self.jobs = jobs
         self.url = url
-        self.parse_url_action = parse_url_action.URLParser()
+        self.extract_links_action = extract_links_action.URLParser()
         self.test_url_action = test_url_action.URLTester()
         self.dead_url_list = []
 
@@ -40,7 +40,7 @@ class DeadLinksIdentifier(object):
     @defer.inlineCallbacks
     def test_one_url(self, one_url):
         # GET requests will not be started in parallel unless threads.deferToThread is used
-        # Or twsited spawnProcess
+        # Or Twisted spawnProcess
         # this part can be speed up - it is a single thread now
         response_code = yield self.test_url_action(one_url)
         if not response_code:
@@ -64,8 +64,8 @@ class DeadLinksIdentifier(object):
     @defer.inlineCallbacks
     def run(self):
         self.log.info('extracting all link from: %s', self.url)
-        html_doc = yield self.parse_url_action(self.url)
-        links = html_doc.links
+        links_obj = yield self.extract_links_action(self.url)
+        links = links_obj.links
         self.log.info('found links to test: %s -> %s', len(links), links)
         yield self.find_dead_links(links, self.jobs)
         if self.dead_url_list:
@@ -77,7 +77,6 @@ class DeadLinksIdentifier(object):
 @defer.inlineCallbacks
 def main(reactor, args):
     """ Entry point."""
-    logging.basicConfig(level=logging.DEBUG)
     app = DeadLinksIdentifier(args.jobs, args.url)
     yield app.run()
 
