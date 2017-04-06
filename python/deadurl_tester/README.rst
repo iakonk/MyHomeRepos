@@ -1,9 +1,7 @@
 ### ABOUT THE PROJECT
 Simple app that scans given url and returns list of dead urls.
 
-BeautifulSoup is used for html parsing - it works with selectors, html text, very simply in use.
-For instance python HTMLParser does not recognize <script> with type=application/json;
-etree.HTMLParser - does not allow to use target parser interface like etree.XMLParser does;
+HTMLParser is used for html parsing - it allows to parse a feed.
 
 Twisted used to handle HTTP GET requests;
 Twisted task.Cooperator() allows to run tasks in parallel;

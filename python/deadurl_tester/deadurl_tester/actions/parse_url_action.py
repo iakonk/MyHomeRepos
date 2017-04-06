@@ -1,5 +1,7 @@
 import logging
-# import ijson
+import json
+import io
+import gzip
 
 from twisted.web.client import Agent, RedirectAgent
 from twisted.internet import defer, task, reactor, protocol
@@ -24,7 +26,8 @@ class HTMLFeedParser(HTMLParser):
         self.log = logging.getLogger(self.__class__.__name__)
         self.tag = None
         self.data_type = None
-        self.json_data = []
+        self.json_buff = io.BytesIO()
+        self.fd = gzip.GzipFile(fileobj=self.json_buff, mode='w')
         self.links = set()
 
     def handle_starttag(self, tag, attrs):
@@ -36,11 +39,9 @@ class HTMLFeedParser(HTMLParser):
             if attr_name == 'href':
                 # we save all links - absolute, relative, bookmarks
                 self.links.add(attr_val)
-                print 'href', attr_val
             elif attr_name == 'src':
                 # we save all scr links - absolute, relative, bookmarks
                 self.links.add(attr_val)
-                print 'src', attr_val
             elif attr_name == 'style':
                 # handle links in <style>
                 url_start_ind = attr_val.find('url')
@@ -51,20 +52,53 @@ class HTMLFeedParser(HTMLParser):
             else:
                 if attr_val and 'http' in attr_val:
                     self.links.add(attr_val)
-                    print 'http in', attr_val
 
     def handle_endtag(self, tag):
         self.tag = None
         self.data_type = None
+
+    def traverse(self, obj):
+        if isinstance(obj, dict):
+            for key, value in obj.iteritems():
+                self.log.debug('dict_key', key)
+                self.traverse(value)
+        elif isinstance(obj, list):
+            for value in obj:
+                self.traverse(value)
+        else:
+            self.log.debug('value', obj)
+
+    def parse_js_content(self, data):
+        # !!! it should be recursion here
+        # it is a very rough implementation
+        js_data = json.loads(data)
+        for key, val in js_data.items():
+            if isinstance(val, dict):
+                for key_, val_ in val.items():
+                    if isinstance(val_, list):
+                        for item in val_:
+                            if isinstance(item, dict):
+                                for k, v in item.items():
+                                    self.log.debug(type(v))
+                            else:
+                                self.log.debug('%s', type(item))
+                    elif isinstance(val_, dict):
+                        for k, v in val_.items():
+                            self.log.debug(type(v))
+                    else:
+                        self.log.debug('%s', type(val_))
+            elif isinstance(val, list):
+                for item in val:
+                    self.log.debug('%s', type(item))
+            else:
+                self.log.debug('%s', type(val))
 
     def handle_data(self, data):
         # we save only json data, do not care about links as text
         # Feeding incomplete chunks works, but handle_data() might be called more than once
         # handle incomplete chunks
         if self.data_type == 'application/json':
-            # parser = ijson.parse(data)
-            # print(parser)
-            pass
+            self.fd.write(data)
 
     def handle_decl(self, data):
         # handle links in DOCTYPE string
@@ -83,7 +117,7 @@ class HTMLResponseProtocol(protocol.Protocol):
 
     def connectionLost(self, reason):
         self.log.debug('Call finished: %s', reason.value)
-        html_doc = HTMLContent(self.parser.json_data, self.parser.links)
+        html_doc = HTMLContent(self.parser.json_buff, self.parser.links)
         self.parser.close()
         self.on_end_defer.callback(html_doc)
 

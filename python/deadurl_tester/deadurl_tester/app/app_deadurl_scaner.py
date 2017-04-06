@@ -41,7 +41,7 @@ class DeadLinksIdentifier(object):
     def test_one_url(self, one_url):
         # GET requests will not be started in parallel unless threads.deferToThread is used
         # Or twsited spawnProcess
-        # so this part is slow .. it is a scope for improvement
+        # this part can be speed up - it is a single thread now
         response_code = yield self.test_url_action(one_url)
         if not response_code:
             # this is unhandled error
