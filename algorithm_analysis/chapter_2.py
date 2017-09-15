@@ -136,3 +136,22 @@ lst = [18, 5, 3, 19, 6, 0, 7, 4, 2, 5]
 selection_sort(lst)
 print lst
 
+
+def insertion_sort(list_):
+    """
+    Time complexity:
+    Worst: O(n^2)
+    """
+    for curr_index in range(1, len(list_)):
+        curr_val = list_[curr_index]
+        curr_position = curr_index
+
+        while curr_position > 0 and list_[curr_position - 1] > curr_val:
+            list_[curr_position] = list_[curr_position - 1]
+            curr_position -= 1
+        list_[curr_position] = curr_val
+
+lst = [18, 5, 3, 19, 6, 0, 7, 4, 2, 5]
+insertion_sort(lst)
+print lst
+
