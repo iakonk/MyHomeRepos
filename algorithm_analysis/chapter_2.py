@@ -5,6 +5,7 @@ class IdentifyFalseBag(object):
     this bag in just one weighing. You have a digital balance that reports the weight of
     what is placed on it.
     """
+
     def __init__(self, bags, expected_coin_weight):
         """ """
         self.bags = bags
@@ -49,7 +50,10 @@ class IdentifyOddBall(object):
     You have eight balls all of the same size. Seven of them weigh the same, and one
     of them weighs slightly more. How can you find the ball that is heavier by using a
     balance and only two weighing?
+
+    Solution works with len(list) == 8, otherwise more than 2 weighing are required
     """
+
     def __init__(self, balls):
         self.balls = balls
 
@@ -80,7 +84,7 @@ class IdentifyOddBall(object):
         result = []
 
         one_group = []
-        one_group_len = int(round(float(len(balls_list))/float(groups_amount)))
+        one_group_len = int(round(float(len(balls_list)) / float(groups_amount)))
         while balls_list:
             one_ball = balls_list.pop(0)
             one_group.append(one_ball)
@@ -98,13 +102,37 @@ class IdentifyOddBall(object):
         """ """
         groups = self._group_balls(self.balls, 3)
         odd_group = self._find_odd_group(groups)
-        print 'First odd group: %s' %  odd_group
+        print 'Odd group: %s' % odd_group
 
         groups = self._group_balls(odd_group, 2)
-        print 'Second odd group: %s' % groups
         odd_ball = self._find_odd_group(groups)
+        print 'Odd ball %s' % odd_ball
         return odd_ball
+
 
 balls = [7, 7, 7, 7, 7, 6, 7, 7]
 odd_ball = IdentifyOddBall(balls)
-print odd_ball.find_odd_ball()
+assert odd_ball.find_odd_ball() == [6]
+
+
+def selection_sort(list_):
+    """
+     Time complexity"
+     Best: O(n^2),  Average: O(n^2), Worst: O(n^2)
+    """
+    for curr_elem_index in range(len(list_)):
+        min_elem_index = curr_elem_index
+
+        for next_elem_index in range(curr_elem_index + 1, len(list_)):
+            if list_[next_elem_index] < list_[min_elem_index]:
+                min_elem_index = next_elem_index
+
+        min_elem = list_[min_elem_index]
+        list_[min_elem_index] = list_[curr_elem_index]
+        list_[curr_elem_index] = min_elem
+
+
+lst = [18, 5, 3, 19, 6, 0, 7, 4, 2, 5]
+selection_sort(lst)
+print lst
+
