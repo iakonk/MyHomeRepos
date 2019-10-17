@@ -1,0 +1,52 @@
+import threading
+import functools
+import subprocess as sp
+import dis
+
+replica = threading.local()
+
+import sys
+sys.setcheckinterval(1)
+
+
+def use_read_replica(view_method):
+    @functools.wraps(view_method)
+    def wrap(view, *args, **kwargs):
+        replica.db = 'replica'
+        result = view_method(view, *args, **kwargs)
+        return result
+    return wrap
+
+
+def SessionThread_odd(userName_in):
+    print userName_in, dis.dis(SessionThread_odd)
+    if hasattr(replica, 'db'):
+        print 'Old val: ', replica.db, userName_in
+    replica.db = userName_in
+    print 'New val: ', replica.db, userName_in
+    # time.sleep(2)
+
+
+@use_read_replica
+def SessionThread_even(userName_in):
+    print userName_in, dis.dis(SessionThread_even)
+    if hasattr(replica, 'db'):
+        print 'Old val: ', replica.db, userName_in
+    replica.db = 'replica'
+    sp.call(['dd', 'if=/dev/zero', 'of=/dev/null', 'bs=2048M', 'count=2'])
+    print 'New val: ', replica.db, userName_in
+
+
+workers = []
+for i in range(10):
+    if i%2 > 0:
+        w = threading.Thread(target=SessionThread_odd("User_%s" % i))
+    else:
+        w = threading.Thread(target=SessionThread_even("User_%s" % i))
+print workers
+
+for worker in workers:
+    worker.start()
+
+for worker in workers:
+    worker.join()
