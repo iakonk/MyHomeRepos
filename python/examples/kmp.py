@@ -1,3 +1,4 @@
+# Knuth-Morris-Pratt algorithm
 class KMP:
 
     def pi(self, substring):
