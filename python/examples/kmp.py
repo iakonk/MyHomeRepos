@@ -20,7 +20,7 @@ class KMP:
 
     def search(self, _string, substring):
         mapping = self.pi(substring)
-        ret = []
+        res = []
         j = 0
         for i in range(0, len(_string)):
             while j > 0 and _string[i] != substring[j]:
@@ -28,10 +28,10 @@ class KMP:
             if _string[i] == substring[j]:
                 j += 1
             if j == len(substring):
-                ret.append(i - (j - 1))
+                res.append(i - (j - 1))
                 j = mapping[j - 1]
 
-        return ret
+        return res
 
 
 res = KMP().pi('arrarra')
