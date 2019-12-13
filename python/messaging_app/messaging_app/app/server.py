@@ -11,7 +11,7 @@ from zmq.asyncio import Context
 class Server:
 
     def __init__(self, stop_on_loop):
-        self.stop_on_loop = stop_on_loop
+        self.stop_on_loop = stop_on_loop  # for integration tests
         self.messages_queue = asyncio.Queue()
         self.context = Context()
         self.sleep_sec = 1
