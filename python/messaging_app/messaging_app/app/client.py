@@ -52,6 +52,7 @@ class Client:
                     break
         except zmq.error.Again as exc:
             print(exc.strerror)
+        finally:
             self.close_all_sockets()
 
 
