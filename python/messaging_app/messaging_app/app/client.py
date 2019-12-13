@@ -7,7 +7,7 @@ import zmq
 class Client:
 
     def __init__(self, stop_on_loop):
-        self.stop_on_loop = stop_on_loop
+        self.stop_on_loop = stop_on_loop # for integration tests
         self.context = zmq.Context()
         self.loops = 0
 
