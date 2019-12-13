@@ -57,8 +57,8 @@ class Client:
 
 
 def main(args):
-    server = Client(args.stop_on_loop)
-    server.run()
+    cli = Client(args.stop_on_loop)
+    cli.run()
 
 
 if __name__ == "__main__":
