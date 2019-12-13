@@ -1,3 +1,4 @@
 messaging_app/.idea/
 messaging_app/tests/__pycache__/
 messaging_app/venv/
+*.pyc

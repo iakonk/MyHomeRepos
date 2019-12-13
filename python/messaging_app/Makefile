@@ -4,9 +4,9 @@ install-deps: requirements.txt
 	${PYENV_HOME}/bin/pip install -U -r requirements.txt
 
 venv: clean
-	rm -rf venv
+	rm -rf ${PYENV_HOME}
 	virtualenv -p python3 ${PYENV_HOME}
-	mkdir -p venv/site-packages
+	mkdir -p ${PYENV_HOME}/site-packages
 	echo "../.." > ${PYENV_HOME}/site-packages/app.pth
 	. ${PYENV_HOME}/bin/activate
 	make install-deps
