@@ -18,7 +18,7 @@ class Client:
         self.sub_socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self.sub_socket.connect("tcp://127.0.0.1:8001")
 
-        # TBD: fix Only one client is able to send requests & all ops are blocking.
+        # TBD: fix Only one client is able to send requests from one PC & all ops are blocking.
         # However, sub messages are queued, so client will receive them all
         self.stdin = select.select([sys.stdin], [], [], 10)[0]
 
