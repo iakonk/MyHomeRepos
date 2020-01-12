@@ -7,7 +7,7 @@ import zmq
 class Client:
 
     def __init__(self, stop_on_loop):
-        self.stop_on_loop = stop_on_loop
+        self.stop_on_loop = stop_on_loop # for integration tests
         self.context = zmq.Context()
         self.loops = 0
 
@@ -18,7 +18,7 @@ class Client:
         self.sub_socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self.sub_socket.connect("tcp://127.0.0.1:8001")
 
-        # TBD: fix Only one client is able to send requests & all ops are blocking.
+        # TBD: fix Only one client is able to send requests from one PC & all ops are blocking.
         # However, sub messages are queued, so client will receive them all
         self.stdin = select.select([sys.stdin], [], [], 10)[0]
 
@@ -52,12 +52,13 @@ class Client:
                     break
         except zmq.error.Again as exc:
             print(exc.strerror)
+        finally:
             self.close_all_sockets()
 
 
 def main(args):
-    server = Client(args.stop_on_loop)
-    server.run()
+    cli = Client(args.stop_on_loop)
+    cli.run()
 
 
 if __name__ == "__main__":
