@@ -22,8 +22,7 @@ import math
 def nums_with_even_num_of_digits_v1(nums_array):
     count = 0
     for num in nums_array:
-        is_even = (math.floor(math.log(num, 10)) + 1) % 2 == 0
-        if is_even:
+        if (math.floor(math.log(num, 10)) + 1) % 2 == 0:
             count += 1
     return count
 
