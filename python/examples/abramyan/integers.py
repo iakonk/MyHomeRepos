@@ -179,11 +179,13 @@ assert integer_21(61) == 1
 assert integer_21(125) == 5
 
 
-def integer_22(num):
+def integer_22(seconds):
     """ seconds since last hour """
     ONE_MIN, ONE_HOUR = 60, 60
-    pass
+    minutes = seconds // ONE_MIN
+    hours = minutes // ONE_HOUR
 
+    seconds_passed = hours
 
 def integer_23(num):
     """ minutes since last hour"""
