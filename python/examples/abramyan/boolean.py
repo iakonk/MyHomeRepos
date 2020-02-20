@@ -81,3 +81,81 @@ def bool_14(a, b, c):
 
 assert bool_14(0, -1, -1)
 assert bool_14(0, 0, 0) == False
+
+
+def bool_15(a, b, c):
+    positive_cnt = 0
+    positive_cnt = positive_cnt + 1 if a > 0 else positive_cnt
+    positive_cnt = positive_cnt + 1 if b > 0 else positive_cnt
+    positive_cnt = positive_cnt + 1 if c > 0 else positive_cnt
+    return positive_cnt == 2
+
+
+def bool_16(a):
+    return a % 2 == 0 and 1 <= a // 10 <= 9
+
+
+assert bool_16(99) == False
+assert bool_16(100) == False
+assert bool_16(10)
+
+
+def bool_17(a):
+    return a % 2 != 0 and 10 <= a // 10 <= 99
+
+
+assert bool_17(999)
+assert bool_17(1000) == False
+
+
+def bool_18(a, b, c):
+    return a == b or b == c
+
+
+assert bool_18(3, 4, 4)
+
+
+def bool_19(a, b, c):
+    return a + b == 0 or b + c == 0
+
+
+assert bool_19(2, -2, 1)
+
+
+def bool_20(a, b, c):
+    return a != b != c
+
+
+assert bool_20(1, 2, 3)
+
+
+def bool_21(num):
+    """ 100 <= num < 1000 """
+    first_n, sec_p = num // 100, num % 100
+    sec_n, th_n = sec_p // 10, sec_p % 10
+    return first_n < sec_n < th_n
+
+
+assert bool_21(123)
+
+
+def bool_22(num):
+    first_n, sec_p = num // 100, num % 100
+    sec_n, th_n = sec_p // 10, sec_p % 10
+    # 123 or 321
+    return first_n < sec_n < th_n or first_n > sec_n > th_n
+
+
+assert bool_22(321)
+
+
+def bool_23(num):
+    """ 1000 <= num < 10000 """
+    f_n = num // 1000
+    s_n = num % 1000 // 100
+    tr_n = num % 1000 % 100 // 10
+    fs_n = num % 1000 % 100 % 10
+    return f_n == fs_n and s_n == tr_n
+
+
+assert bool_23(3223)
