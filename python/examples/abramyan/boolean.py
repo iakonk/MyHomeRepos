@@ -22,12 +22,16 @@ def bool_6(a, b, c):
     return a < b < c
 
 
+assert bool_6(4, 2, 3) == False
+assert bool_6(5, 6, 7)
+
+
 def bool_7(a, b, c):
     return a <= b <= c
 
 
 def bool_8(a, b):
-    return a % 2 > 0 and b % 2 > 0
+    return a * b % 2 > 0
 
 
 def bool_9(a, b):
@@ -35,10 +39,7 @@ def bool_9(a, b):
 
 
 def bool_10(a, b):
-    odd_cnt = 0
-    odd_cnt = odd_cnt + 1 if a % 2 > 0 else odd_cnt
-    odd_cnt = odd_cnt + 1 if b % 2 > 0 else odd_cnt
-    return odd_cnt == 1
+    return a % 2 != b % 2
 
 
 assert bool_10(3, 7) == False
@@ -123,10 +124,11 @@ assert bool_19(2, -2, 1)
 
 
 def bool_20(a, b, c):
-    return a != b != c
+    return a != b != c != a
 
 
 assert bool_20(1, 2, 3)
+assert bool_20(1, 2, 1) == False
 
 
 def bool_21(num):
@@ -151,11 +153,14 @@ assert bool_22(321)
 
 def bool_23(num):
     """ 1000 <= num < 10000 """
-    f_n = num // 1000
-    s_n = num % 1000 // 100
-    tr_n = num % 1000 % 100 // 10
-    fs_n = num % 1000 % 100 % 10
-    return f_n == fs_n and s_n == tr_n
+    num_str = str(num)
+    num_of_digits = len(num_str)
+    if num_of_digits % 2 > 0:
+        return False
+    for i in range(0, num_of_digits // 2):
+        if num_str[i] != num_str[num_of_digits - i - 1]:
+            return False
+    return True
 
 
-assert bool_23(3223)
+assert bool_23(3223), bool_23(3223)
