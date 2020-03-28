@@ -18,4 +18,4 @@ class Solution(object):
 
 assert Solution().isPalindrome("0P") == False
 assert Solution().isPalindrome("A man, a plan, a canal: Panama")
-assert Solution().isPalindrome("ara")
+assert Solution().isPalindrome(" ara")
