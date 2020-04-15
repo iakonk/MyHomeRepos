@@ -1,8 +1,8 @@
-def find_average(k, array):
+def find_average(k, nums):
     result = []
     start, window_sum = 0, 0
 
-    for ind in range(0, len(array)):
+    for ind in range(0, len(nums)):
         window_sum += array[ind]
 
         if ind >= k - 1:

@@ -1,10 +1,11 @@
 class Solution(object):
     def next_number(self, n):
-        total_sum = 0
-        while n != 0:
-            n, last_digit = divmod(n, 10)
-            total_sum += last_digit**2
-        return total_sum
+        if n == 0:
+            return 0
+        else:
+            all_but_last, last = divmod(n, 10)
+            return last ** 2 + self.next_number(all_but_last)
+
 
     def isHappy(self, n):
         """
@@ -13,8 +14,9 @@ class Solution(object):
         """
         seen = set()
         while n != 1 and n not in seen:
-            n = self.next_number(n)
             seen.add(n)
+            n = self.next_number(n)
+
         return n == 1
 
 
