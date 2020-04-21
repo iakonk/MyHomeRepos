@@ -12,12 +12,12 @@ def is_hit(x, y):
 def find_first_hit(n, m):
     first_hit = None
     for x in range(0, m):
-        if first_hit:
-            break
         for y in range(0, n):
             if is_hit(x, y):
                 first_hit = (x, y)
                 break
+        else:
+            continue
     return first_hit
 
 

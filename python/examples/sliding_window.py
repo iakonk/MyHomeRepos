@@ -3,11 +3,11 @@ def find_average(k, nums):
     start, window_sum = 0, 0
 
     for ind in range(0, len(nums)):
-        window_sum += array[ind]
+        window_sum += nums[ind]
 
         if ind >= k - 1:
             result.append(window_sum / k)
-            window_sum -= array[start]
+            window_sum -= nums[start]
             start += 1
     return result
 
@@ -119,3 +119,66 @@ def longest_non_repeat_substring(str):
 assert longest_non_repeat_substring("aabccbb") == 3
 assert longest_non_repeat_substring("abbbb") == 2
 assert longest_non_repeat_substring("abccde") == 5
+
+
+def get_shortest_unique_substring(arr, str):
+    tail, unique_cnt = 0, 0
+    seen = {}
+    ans = ""
+    for head, char in enumerate(str):
+        if char not in arr:
+            continue
+        else:
+            if char not in seen:
+                unique_cnt += 1
+            seen.setdefault(char, 0)
+            seen[char] += 1
+
+        while unique_cnt == len(arr):
+            if head - tail + 1 == len(arr): # min required len
+                return str[tail:head + 1]
+            elif not ans or head - tail + 1 < len(ans): # min len found so far
+                ans = str[tail: head + 1]
+
+            if str[tail] in seen:
+                seen[str[tail]] -= 1
+                unique_cnt -= 1
+            tail += 1
+
+    # seen = {}
+    # min_w_len = float('inf')
+    # tail = 0
+    # for head, char in enumerate(str):
+    #     # if char not in arr and we did`t find so far -> shrink the window & continue
+    #     if char not in arr and sum(seen.values()) == 0:
+    #         tail += 1
+    #         continue
+    #     # ["A","B","C","E","K","I"], "KADOBECODEBANCDDDEI"
+    #     if char in arr:
+    #         seen.setdefault(char, 0)
+    #         seen[char] += 1
+    #         # # shrink window until duplicate
+    #         # while seen[char] > 1:
+    #         #     if str[tail] in seen:
+    #         #         seen[str[tail]] -= 1
+    #         #     tail += 1
+    #
+    #     # shrink window when it contains all matched characters
+    #     if sum(seen.values()) == len(arr):
+    #         if min_w_len > head - tail + 1:
+    #             min_w_len = head - tail + 1
+    #             ans = str[tail: head + 1]
+    #         seen = {}
+    #         tail = head + 1
+    print(ans)
+    return ans
+
+
+ans = get_shortest_unique_substring(["A", "B", "C"], "ADOBECODEBANCDDD")
+assert ans == "BANC", ans
+
+ans = get_shortest_unique_substring(["x", "y", "z"], "xyyzyzyx")
+assert ans == "zyx"
+
+ans = get_shortest_unique_substring( ["A","B","C","E","K","I"], "KADOBECODEBANCDDDEI")
+assert ans == "KADOBECODEBANCDDDEI"
