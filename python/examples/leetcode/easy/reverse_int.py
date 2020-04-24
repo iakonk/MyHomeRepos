@@ -13,22 +13,8 @@ class Solution(object):
                 return 0
         return reversed_num if orig > 0 else -reversed_num
 
-        # def get_reversed(num):
-        #     res = []
-        #     while num != 0:
-        #         num, last_digit = divmod(num, 10)
-        #         res.append(str(last_digit))
-        #     return res
-        #
-        # if 1 <= x < 10 or x == 0:
-        #     return x
-        # reversed = int(''.join(get_reversed(abs(x))))
-        # reversed = -reversed if x < 0 else reversed
-        # return reversed if -2**31 <= reversed <= (2**31)-1 else 0
-
-
-# assert Solution().reverse(0) == 0
-# assert Solution().reverse(10) == 1, Solution().reverse(10)
+assert Solution().reverse(0) == 0
+assert Solution().reverse(10) == 1, Solution().reverse(10)
 assert Solution().reverse(-123) == -321, Solution().reverse(-123)
 
 # corner cases:

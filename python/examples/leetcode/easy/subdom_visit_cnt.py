@@ -14,5 +14,5 @@ class Solution(object):
                 result[key] += int(v_cnt)
         return ['{} {}'.format(cnt, dom) for dom, cnt in result.items()]
 
-print(Solution().subdomainVisits(["900 google.mail.com", "50 yahoo.com", "1 intel.mail.com", "5 wiki.org"] ))
 
+print(Solution().subdomainVisits(["900 google.mail.com", "50 yahoo.com", "1 intel.mail.com", "5 wiki.org"]))

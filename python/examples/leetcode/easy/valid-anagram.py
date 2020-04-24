@@ -13,7 +13,7 @@ class Solution(object):
 
         aggr = collections.Counter(t)
         for char in s:
-            if not aggr:
+            if char not in aggr:
                 return False
             if char in aggr:
                 aggr[char] -= 1
