@@ -1,9 +1,16 @@
 """
-cat ips.txt | python find_missing_ips.py - '192.0.2.16/29'
-
 cat ips.txt
 192.0.2.16
 192.0.2.23
+
+cat ips.txt | python find_missing_ips.py - '192.0.2.16/29'
+Will print:
+192.0.2.17
+192.0.2.18
+192.0.2.19
+192.0.2.20
+192.0.2.21
+192.0.2.22
 """
 import sys
 import argparse
