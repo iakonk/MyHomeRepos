@@ -19,12 +19,12 @@ class Solution(object):
         while left < right:
             if nums[right] > nums[left]:
                 right -= 1
-                left +=1
+                left += 1
             else:
                 nums[left], nums[right] = nums[right], nums[left]
-                left+=1
+                left += 1
         return nums
 
 
-ans = Solution().nextPermutation([3,1,2])
+ans = Solution().nextPermutation([3, 1, 2])
 print(ans)

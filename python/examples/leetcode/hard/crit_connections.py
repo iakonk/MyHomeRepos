@@ -1,3 +1,11 @@
+"""
+Tarjan`s strongly connected component:
+https://www.youtube.com/watch?v=wUgWX0nc4NY&list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P&index=22
+
+The low-link value of a node is a smallest node id reachable from that node
+when doing a dfs (including itself).
+
+"""
 class Solution(object):
     def criticalConnections(self, n, connections):
         """
@@ -40,5 +48,5 @@ class Solution(object):
         return bridges
 
 
-ans = Solution().criticalConnections(4, [[0,1],[1,2],[2,0],[1,3]])
+ans = Solution().criticalConnections(4, [[0, 1], [1, 2], [2, 0], [1, 3]])
 assert ans == [[1, 3]]
