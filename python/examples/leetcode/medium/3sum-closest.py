@@ -15,7 +15,7 @@ class Solution(object):
         """
         nums.sort()
         n = len(nums)
-        closest_t = sum(nums[:3])
+        closest_t = float('inf')
 
         for i, num in enumerate(nums):
             if i and nums[i] == nums[i-1]:
@@ -24,13 +24,14 @@ class Solution(object):
             left, right = i + 1, n - 1
             while left < right:
                 sum_ = nums[i] + nums[left] + nums[right]
-                if abs(sum_ - target) < abs(closest_t - target):
+                curr_diff = abs(target - sum_)
+                min_diff = abs(target - closest_t)
+                if curr_diff < min_diff:
                     closest_t = sum_
                 left += sum_ < target
                 right -= sum_ > target
                 if sum_ == target:
                     return closest_t
-        print(closest_t)
         return closest_t
 
 
