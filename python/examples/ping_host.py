@@ -12,7 +12,7 @@ def send_email(hostname, prev_state, curr_state):
 def run_one_loop(hostname):
     state = set()
     cnt = 2
-    while cnt >= 0:
+    while cnt >= 1:
         exit_code = sp.check_call(['ping', hostname])
         curr_state = "DOWN" if exit_code else "UP"
         state.add(curr_state)
@@ -42,7 +42,7 @@ for one_code in state:
     sp.check_call.return_value = one_code
     res = run_one_loop('localhost')
     assert res == state[one_code]
-    assert sp.check_call.call_count == 3
+    assert sp.check_call.call_count == 2
 
 # test that email is sent when status changes
 run_one_loop = Mock(return_value="UP")
