@@ -1,0 +1,16 @@
+cluster:
+  installed: false
+  name: dev
+  cloud:
+    provider: aws
+    region: eu-central-1
+    vpc: default
+    domain: cluster.dev
+    provisioner:
+      type: minikube
+      instanceType: t2.medium
+  addons:
+    nginx-ingress: true
+    cert-manager: true
+  apps:
+    - /kubernetes/apps/samples
