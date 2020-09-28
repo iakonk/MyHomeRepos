@@ -2,7 +2,7 @@ def longest_substr(string, k):
     left = max_unique = max_repeat_letter_count = 0
     aggr_chars = {}
 
-    for right, char in range(len(string)):
+    for right, char in enumerate(string):
         aggr_chars.setdefault(char, 0)
         aggr_chars[char] += 1
         max_freq = max(max_unique, aggr_chars[char])

@@ -22,7 +22,7 @@ class Solution(object):
         #     res.append(overflow)
         res = reversed(res)
 
-        return int(''.join([str(d) for d in res])) if res else 0
+        return ''.join([str(d) for d in res]) if res else 0
 
 
 ans = Solution().getSum(24, 39)

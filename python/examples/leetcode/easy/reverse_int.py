@@ -13,11 +13,7 @@ class Solution(object):
                 return 0
         return reversed_num if orig > 0 else -reversed_num
 
+
 assert Solution().reverse(0) == 0
 assert Solution().reverse(10) == 1, Solution().reverse(10)
 assert Solution().reverse(-123) == -321, Solution().reverse(-123)
-
-# corner cases:
-# [0, 9]
-#  < 0
-# [−231,  231 − 1]

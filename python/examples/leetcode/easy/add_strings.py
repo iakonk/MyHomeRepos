@@ -30,8 +30,3 @@ class Solution(object):
 assert Solution().addStrings('198', '188') == '386'
 assert Solution().addStrings('98', '188') == '286'
 assert Solution().addStrings('1', '9') == '10'
-
-num = -123
-while num != 0:
-    num, last_digit = divmod(num, 10)
-    print(num, last_digit)
