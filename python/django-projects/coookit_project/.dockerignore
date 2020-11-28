@@ -1,0 +1,7 @@
+*.egg-info/*
+coookit/*
+*.in
+*.rst
+*.py
+*.sqlite3
+pg_data/*

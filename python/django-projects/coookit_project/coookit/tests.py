@@ -1,7 +1,6 @@
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from coookit.views import home
-from coookit.models import Articles
 from django.http import HttpRequest
 
 
@@ -18,6 +17,4 @@ class HomePageTest(TestCase):
 
 
 class ArticlesTestCase(TestCase):
-    # def setUp(self):
-    #     Articles.objects.create()
     pass

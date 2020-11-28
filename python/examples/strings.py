@@ -54,7 +54,7 @@ for i in range(0, len(arr)):
     pair = find_sum(arr, 7, arr[i])
     if pair:
         result.add(pair)
-print result
+print(result)
 
 
 # Can you break the given string into words, provided by a given hashmap
@@ -74,9 +74,9 @@ for substr, freq_num in hash.iteritems():  # N = hashmap len
             if words == [substr] * freq_num:
                 str_ = str_[:i] + str_[i + total_len:]
 if not str_:
-    print 'Yes'
+    print('Yes')
 else:
-    print 'No'
+    print ('No')
 
 # Find whether string S is periodic
 # Periodic indicates S = nP
@@ -93,10 +93,10 @@ def generate_pairs(x_len, y_len):
     import random
     pairs = set()
     while len(pairs) < 3:
-        pair = (random.sample(xrange(0, x_len), 1)[0], random.sample(xrange(0, y_len), 1)[0])
+        pair = (random.sample(range(0, x_len), 1)[0], random.sample(range(0, y_len), 1)[0])
         pairs.add(pair)
     return pairs
-print generate_pairs(9, 18)
+print(generate_pairs(9, 18))
 
 
 # Naive string matcher
@@ -106,4 +106,4 @@ for i in range(0, len(string_)):
     piece = string_[i: i+len(substr)]
     for x in range(0, len(piece), len(substr)):
         if piece[x: x + len(substr)] == substr:
-            print i, 'matched'
+            print (i, 'matched')

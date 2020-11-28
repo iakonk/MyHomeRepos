@@ -14,8 +14,9 @@ def home(request):
     :return: List of all found articles
     """
     try:
-        articles = Articles.objects.published().values('id', 'header', 'negative_feedback', 'positive_feedback',
-                                                 'article_type', 'thumbnail', 'created_date')
+        articles = Articles.objects.published().values(
+            'id', 'header', 'negative_feedback', 'positive_feedback',
+            'article_type', 'thumbnail', 'created_date')
         article_types = Articles.ARTICLE_TYPES
     except ValueError:
         raise Http404()
@@ -90,6 +91,6 @@ def email2_moderator(request):
             server.login(GMAIL_USER, GMAIL_PWD)
             server.sendmail(reply_to, GMAIL_USER, message)
             server.close()
-            print 'successfully sent the mail'
+            print('successfully sent the mail')
         except:
-            print "failed to send mail"
+            print("failed to send mail")

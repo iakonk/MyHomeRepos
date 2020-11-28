@@ -1,0 +1,28 @@
+version: "3.3"
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+      labels:
+        image-name: coookit-app-img
+      args:
+        - DJANGO_SETTINGS_MODULE=coookit.settings
+        - UWSGI_CHDIR=/usr/local/lib/python3.9/site-packages/coookit
+        - PYTHONPATH=/usr/local/lib/python3.9/site-packages
+    image: coookit-app-img
+    ports:
+      - "8080:8080"
+
+  database:
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+      labels:
+        image-name: coookit-db-img
+    image: coookit-db-img
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/main/

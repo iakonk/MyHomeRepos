@@ -124,9 +124,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 MEDIA_URL = 'uploads/'
-MEDIA_ROOT = os.path.join(prefix, 'var')
+MEDIA_ROOT = '/app/uploads'
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(prefix, 'var', 'static')
+STATIC_ROOT = '/app/static'
 
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -144,6 +144,7 @@ def uploaded_filepath(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join(MEDIA_URL, filename)
+
 
 SUMMERNOTE_CONFIG = {
     'iframe': True,
@@ -176,7 +177,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(prefix, 'logs', 'django.log'),
+            'filename': '/var/log/django/django.log',
         },
     },
     'loggers': {
