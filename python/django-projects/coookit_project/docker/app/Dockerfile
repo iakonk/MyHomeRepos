@@ -11,7 +11,6 @@ ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
 
 WORKDIR /app
 
-RUN useradd coookit
 RUN mkdir -p /app/static \
              /app/cache \
              /app/uploads \
@@ -22,32 +21,33 @@ RUN mkdir -p /app/static \
              /var/log/nginx \
              /var/log/uwsgi \
              /var/log/django \
-             /var/cache/nginx &&\
-    chown coookit:coookit /var/log/uwsgi ;\
-    chown coookit:coookit /var/log/django ;\
-    chown coookit:coookit /var/log/nginx ;\
-    chown coookit:coookit /var/run/uwsgi ;\
-    chown coookit:coookit /var/run/nginx ;\
-    chown coookit:coookit /var/cache/nginx ;\
-    chown --recursive coookit:coookit /app &&\
-    chmod g+s /app
+             /var/cache/nginx
 
 RUN echo 'deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx' >> /etc/apt/sources.list.d/nginx.list ;\
     echo 'deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx' >> /etc/apt/sources.list.d/nginx.list ;\
     wget http://nginx.org/keys/nginx_signing.key &&\
     apt-key add nginx_signing.key &&\
     apt update && \
-    apt install -y nginx supervisor &&\
+    apt install -y nginx  &&\
     apt-get clean &&\
-    find /etc/supervisor/conf.d -name '*.conf' -delete &&\
     find /etc/nginx/conf.d -name '*.conf' -delete
+
+RUN useradd coookit
 
 COPY --chown=coookit:coookit etc /app/etc
 COPY requirements.txt Makefile dist/coookit-*.tar.gz ./
 
 RUN make install &&\
+    chown --recursive coookit:coookit /var/log/uwsgi ;\
+    chown --recursive coookit:coookit /var/log/django ;\
+    chown --recursive coookit:coookit /var/log/nginx ;\
+    chown --recursive coookit:coookit /var/run/uwsgi ;\
+    chown --recursive coookit:coookit /var/run/nginx ;\
+    chown --recursive coookit:coookit /var/cache/nginx ;\
+    chown --recursive coookit:coookit /app ;\
+    chown --recursive g+s /app ;\
     rm -f ./requirements.txt ./Makefile ./coookit-*.tar.gz ./nginx_signing.key
 
 EXPOSE 8080
 
-CMD ["/usr/bin/supervisord", "-c", "/app/etc/supervisord.conf"]
+CMD ["supervisord", "-c", "/app/etc/supervisord.conf"]

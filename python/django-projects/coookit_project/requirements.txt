@@ -1,5 +1,7 @@
-django==1.7
-easy_thumbnails
-django-summernote
-psycopg2
-pillow
+django==1.11.17
+django-summernote==0.8.11.6
+easy_thumbnails==2.7.1
+psycopg2==2.8.6
+pillow==8.0.1
+uwsgi==2.0.19.1
+supervisor==4.2.1
