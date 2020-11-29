@@ -9,6 +9,10 @@ install:
 	make install-deps
 	pip install `find . -name 'coookit-*.tar.gz'`
 	make django-collectstatic
+	make post-install
+
+post-install:
+	pip cache purge
 
 django-collectstatic: $(UWSGI_CHDIR)/manage.py
 	python $(UWSGI_CHDIR)/manage.py collectstatic
@@ -25,4 +29,4 @@ clean:
 	rm -rf dist
 	rm -rf *.egg-info
 
-.PHONY: install install-deps clean database package django-collectstatic
+.PHONY: install install-deps clean database package django-collectstatic post-install

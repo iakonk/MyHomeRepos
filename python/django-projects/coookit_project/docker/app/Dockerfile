@@ -45,10 +45,6 @@ RUN make install &&\
     chown --recursive coookit:coookit /var/run/nginx ;\
     chown --recursive coookit:coookit /var/cache/nginx ;\
     chown --recursive coookit:coookit /app ;\
-    chmod --recursive g+s /app ;\
-    chmod --recursive g+s /var/log/uwsgi ;\
-    chmod --recursive g+s /var/log/nginx ;\
-    chmod --recursive g+s /var/log/django ;\
     rm -f ./requirements.txt ./Makefile ./coookit-*.tar.gz ./nginx_signing.key
 
 EXPOSE 8080
