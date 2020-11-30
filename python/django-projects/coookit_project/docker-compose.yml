@@ -1,7 +1,35 @@
-version: "3.3"
+version: "3.8"
+
+volumes:
+  pg_data:
+  uploads:
+
+networks:
+  coookit:
+
 services:
 
+  database:
+    restart: on-failure
+    networks:
+      coookit:
+        aliases:
+          - coookit-db-host
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+      labels:
+        image-name: coookit-db-img
+    image: coookit-db-img
+    volumes:
+      - pg_data:/var/lib/postgresql/11/main
+
   web:
+    restart: on-failure
+    depends_on:
+      - database
+    networks:
+      - coookit
     build:
       context: .
       dockerfile: docker/app/Dockerfile
@@ -11,18 +39,13 @@ services:
         - DJANGO_SETTINGS_MODULE=coookit.settings
         - UWSGI_CHDIR=/usr/local/lib/python3.9/site-packages/coookit
         - PYTHONPATH=/usr/local/lib/python3.9/site-packages
+        - PG_HOST=coookit-db-host
+        - PG_PORT=5432
+        - PG_USER=coookit
+        - PG_PASS=coookit
+        - PG_DB_NAME=coookit
     image: coookit-app-img
     ports:
       - "8080:8080"
-
-  database:
-    build:
-      context: .
-      dockerfile: docker/db/Dockerfile
-      labels:
-        image-name: coookit-db-img
-    image: coookit-db-img
-    ports:
-      - "5432:5432"
     volumes:
-      - ./pg_data:/var/lib/postgresql/main/
+      - uploads:/app/uploads

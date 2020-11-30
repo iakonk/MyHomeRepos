@@ -1,23 +1,19 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8 &&\
-    echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list ;\
-    apt-get update && apt-get install -y python-software-properties \
-                                         software-properties-common \
-                                         postgresql-9.3 \
-                                         postgresql-client-9.3 \
-                                         postgresql-contrib-9.3
+ENV TZ=Europe/Kiev \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt -y install curl ca-certificates gnupg ;\
+    curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - ;\
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" > /etc/apt/sources.list.d/pgdg.list ;\
+    apt update && apt -y install postgresql-11 postgresql-client-11 postgresql-contrib-11
+
+COPY --chown=postgres:postgres etc/postgresql.conf /etc/postgresql/
+COPY --chown=postgres:postgres etc/init.sql ./
+
 USER postgres
 
 RUN /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER coookit WITH SUPERUSER PASSWORD 'coookit';" &&\
-    createdb -O coookit coookit
+    psql --file ./init.sql
 
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf
-RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
-
-EXPOSE 5432
-
-VOLUME  ["/etc/postgresql", "/var/lib/postgresql"]
-
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+CMD ["/usr/lib/postgresql/11/bin/postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]

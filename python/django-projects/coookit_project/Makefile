@@ -8,18 +8,18 @@ install-deps: requirements.txt
 install:
 	make install-deps
 	pip install `find . -name 'coookit-*.tar.gz'`
-	make django-collectstatic
+	make collectstatic
 	make post-install
 
 post-install:
 	pip cache purge
 
-django-collectstatic: $(UWSGI_CHDIR)/manage.py
+collectstatic: $(UWSGI_CHDIR)/manage.py
 	python $(UWSGI_CHDIR)/manage.py collectstatic
 
-database:
-	cd /opt/bics_ipop/migrations/
-	nomad init
+database: $(UWSGI_CHDIR)/manage.py
+	python $(UWSGI_CHDIR)/manage.py makemigrations
+	python $(UWSGI_CHDIR)/manage.py migrate
 
 clean:
 	rm -rf `find . -name __pycache__`
@@ -29,4 +29,4 @@ clean:
 	rm -rf dist
 	rm -rf *.egg-info
 
-.PHONY: install install-deps clean database package django-collectstatic post-install
+.PHONY: install install-deps clean database package collectstatic post-install

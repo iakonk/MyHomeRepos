@@ -3,9 +3,19 @@ FROM python:3
 ARG DJANGO_SETTINGS_MODULE
 ARG UWSGI_CHDIR
 ARG PYTHONPATH
+ARG PG_HOST
+ARG PG_PORT
+ARG PG_USER
+ARG PG_PASS
+ARG PG_DB_NAME
 ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
     UWSGI_CHDIR=$UWSGI_CHDIR \
     PYTHONPATH=$PYTHONPATH \
+    PG_HOST=$PG_HOST \
+    PG_PORT=$PG_PORT \
+    PG_USER=$PG_USER \
+    PG_PASS=$PG_PASS \
+    PG_DB_NAME=$PG_DB_NAME \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
@@ -13,7 +23,6 @@ WORKDIR /app
 
 RUN mkdir -p /app/static \
              /app/cache \
-             /app/uploads \
              /var/run/supervisor \
              /var/run/uwsgi \
              /var/run/nginx \
@@ -35,7 +44,7 @@ RUN echo 'deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic ngi
 RUN useradd coookit
 
 COPY --chown=coookit:coookit etc /app/etc
-COPY requirements.txt Makefile dist/coookit-*.tar.gz ./
+COPY requirements.txt Makefile dist/coookit-*.tar.gz docker/app/entrypoint.sh ./
 
 RUN make install &&\
     chown --recursive coookit:coookit /var/log/uwsgi ;\
@@ -44,9 +53,10 @@ RUN make install &&\
     chown --recursive coookit:coookit /var/run/uwsgi ;\
     chown --recursive coookit:coookit /var/run/nginx ;\
     chown --recursive coookit:coookit /var/cache/nginx ;\
-    chown --recursive coookit:coookit /app ;\
-    rm -f ./requirements.txt ./Makefile ./coookit-*.tar.gz ./nginx_signing.key
+    chown --recursive coookit:coookit . ;\
+    chmod +x ./entrypoint.sh ;\
+    rm -f ./requirements.txt ./coookit-*.tar.gz ./nginx_signing.key
 
 EXPOSE 8080
 
-CMD ["supervisord", "-c", "/app/etc/supervisord.conf"]
+ENTRYPOINT ["/app/entrypoint.sh"]
