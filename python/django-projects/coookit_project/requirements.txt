@@ -1,4 +1,4 @@
-Django==1.7
+Django==1.11.29
 django-summernote==0.7.3
 django-tinymce==2.2.0
 django-wysiwyg-redactor==0.4.9
