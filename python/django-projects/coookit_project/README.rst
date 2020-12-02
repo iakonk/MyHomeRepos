@@ -7,3 +7,7 @@ Build images
 ==============
 sudo ./build.sh
 
+Connect to the running containers
+==============
+./connect.sh  [app|db]
+
