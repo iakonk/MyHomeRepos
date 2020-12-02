@@ -8,18 +8,18 @@ install-deps: requirements.txt
 install:
 	make install-deps
 	pip install `find . -name 'coookit-*.tar.gz'`
+	ln -s $(UWSGI_CHDIR)/manage.py /usr/bin/manage.py
+	chmod +x /usr/bin/manage.py
 	make collectstatic
-	make post-install
-
-post-install:
-	pip cache purge
 
 collectstatic: $(UWSGI_CHDIR)/manage.py
-	python $(UWSGI_CHDIR)/manage.py collectstatic
+	manage.py collectstatic --noinput
 
 database: $(UWSGI_CHDIR)/manage.py
-	python $(UWSGI_CHDIR)/manage.py makemigrations
-	python $(UWSGI_CHDIR)/manage.py migrate
+	manage.py makemigrations
+	manage.py migrate
+	manage.py makemigrations coookit
+	manage.py migrate coookit
 
 clean:
 	rm -rf `find . -name __pycache__`

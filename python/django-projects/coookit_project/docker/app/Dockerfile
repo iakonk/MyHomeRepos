@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:2
 
 ARG DJANGO_SETTINGS_MODULE
 ARG UWSGI_CHDIR
@@ -45,6 +45,7 @@ RUN useradd coookit
 
 COPY --chown=coookit:coookit etc /app/etc
 COPY requirements.txt Makefile dist/coookit-*.tar.gz docker/app/entrypoint.sh ./
+COPY docker/app/uwsgi /etc/logrotate.d/
 
 RUN make install &&\
     chown --recursive coookit:coookit /var/log/uwsgi ;\
@@ -53,7 +54,6 @@ RUN make install &&\
     chown --recursive coookit:coookit /var/run/uwsgi ;\
     chown --recursive coookit:coookit /var/run/nginx ;\
     chown --recursive coookit:coookit /var/cache/nginx ;\
-    chown --recursive coookit:coookit . ;\
     chmod +x ./entrypoint.sh ;\
     rm -f ./requirements.txt ./coookit-*.tar.gz ./nginx_signing.key
 

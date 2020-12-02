@@ -1,4 +1,7 @@
 #!/bin/sh
 
-su - coookit -c "cd /app && make database"
+chown -R coookit:coookit /app
+chmod g+s /app/uploads
+cd /app && make database
+
 supervisord -c /app/etc/supervisord.conf

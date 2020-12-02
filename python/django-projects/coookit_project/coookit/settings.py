@@ -118,11 +118,8 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-
 MEDIA_URL = 'uploads/'
-MEDIA_ROOT = '/app/uploads'
+MEDIA_ROOT = '/app/'
 STATIC_URL = '/static/'
 STATIC_ROOT = '/app/static'
 

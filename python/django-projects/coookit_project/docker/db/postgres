@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/pg_dump --data-only --oids --file $PGBACKUP/coookit.dump

@@ -1,9 +1,5 @@
 version: "3.8"
 
-volumes:
-  pg_data:
-  uploads:
-
 networks:
   coookit:
 
@@ -14,7 +10,7 @@ services:
     networks:
       coookit:
         aliases:
-          - coookit-db-host
+          - db-host
     build:
       context: .
       dockerfile: docker/db/Dockerfile
@@ -22,7 +18,15 @@ services:
         image-name: coookit-db-img
     image: coookit-db-img
     volumes:
-      - pg_data:/var/lib/postgresql/11/main
+      - type: bind
+        source: ./pg_backup
+        target: /pg_backup
+      - type: bind
+        source: ./pgdata
+        target: /var/lib/postgresql/11/main
+    environment:
+      - PGDATA=/var/lib/postgresql/11/main
+      - PGBACKUP=/pg_backup
 
   web:
     restart: on-failure
@@ -37,9 +41,9 @@ services:
         image-name: coookit-app-img
       args:
         - DJANGO_SETTINGS_MODULE=coookit.settings
-        - UWSGI_CHDIR=/usr/local/lib/python3.9/site-packages/coookit
-        - PYTHONPATH=/usr/local/lib/python3.9/site-packages
-        - PG_HOST=coookit-db-host
+        - UWSGI_CHDIR=/usr/local/lib/python2.7/site-packages/coookit
+        - PYTHONPATH=/usr/local/lib/python2.7/site-packages
+        - PG_HOST=db-host
         - PG_PORT=5432
         - PG_USER=coookit
         - PG_PASS=coookit
@@ -48,4 +52,6 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - uploads:/app/uploads
+      - type: bind
+        source: ./uploads
+        target: /app/uploads

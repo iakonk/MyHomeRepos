@@ -4,4 +4,6 @@ coookit/*
 *.rst
 *.py
 *.sqlite3
-pg_data/*
+pgdata/*
+pg_backup/*
+uploads/*
