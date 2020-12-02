@@ -17,45 +17,50 @@ ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
     PG_PASS=$PG_PASS \
     PG_DB_NAME=$PG_DB_NAME \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1  \
+    PACKAGES="\
+        nginx \
+        python-setuptools \
+    "
 
 WORKDIR /app
 
-RUN mkdir -p /app/static \
-             /app/cache \
-             /var/run/supervisor \
-             /var/run/uwsgi \
-             /var/run/nginx \
-             /var/log/supervisor \
-             /var/log/nginx \
-             /var/log/uwsgi \
-             /var/log/django \
-             /var/cache/nginx
+RUN echo 'deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx' >> /etc/apt/sources.list.d/nginx.list \
+    && echo 'deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx' >> /etc/apt/sources.list.d/nginx.list \
+    && wget http://nginx.org/keys/nginx_signing.key \
+    && apt-key add nginx_signing.key \
+    && apt update \
+    && apt install -y $PACKAGES \
+    && apt-get clean \
+    && find /etc/nginx/conf.d -name '*.conf' -delete \
+    && easy_install pip \
+    && pip install --upgrade pip
 
-RUN echo 'deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx' >> /etc/apt/sources.list.d/nginx.list ;\
-    echo 'deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx' >> /etc/apt/sources.list.d/nginx.list ;\
-    wget http://nginx.org/keys/nginx_signing.key &&\
-    apt-key add nginx_signing.key &&\
-    apt update && \
-    apt install -y nginx  &&\
-    apt-get clean &&\
-    find /etc/nginx/conf.d -name '*.conf' -delete
-
-RUN useradd coookit
-
-COPY --chown=coookit:coookit etc /app/etc
 COPY requirements.txt Makefile dist/coookit-*.tar.gz docker/app/entrypoint.sh ./
-COPY docker/app/uwsgi /etc/logrotate.d/
 
-RUN make install &&\
-    chown --recursive coookit:coookit /var/log/uwsgi ;\
-    chown --recursive coookit:coookit /var/log/django ;\
-    chown --recursive coookit:coookit /var/log/nginx ;\
-    chown --recursive coookit:coookit /var/run/uwsgi ;\
-    chown --recursive coookit:coookit /var/run/nginx ;\
-    chown --recursive coookit:coookit /var/cache/nginx ;\
-    chmod +x ./entrypoint.sh ;\
-    rm -f ./requirements.txt ./coookit-*.tar.gz ./nginx_signing.key
+RUN useradd coookit \
+    && mkdir -p /app/static \
+                /app/cache \
+                /var/run/supervisor \
+                /var/run/uwsgi \
+                /var/run/nginx \
+                /var/log/supervisor \
+                /var/log/nginx \
+                /var/log/uwsgi \
+                /var/log/django \
+                /var/cache/nginx \
+    && make install \
+    && chown --recursive coookit:coookit /var/log/uwsgi \
+                                         /var/log/django \
+                                         /var/log/nginx \
+                                         /var/run/uwsgi \
+                                         /var/run/nginx \
+                                         /var/cache/nginx \
+    && chmod +x ./entrypoint.sh \
+    && rm -f ./requirements.txt ./coookit-*.tar.gz
+
+COPY --chown=coookit:coookit etc/nginx.conf etc/supervisord.conf etc/uwsgi.ini /app/etc/
+COPY docker/app/uwsgi docker/app/django /etc/logrotate.d/
 
 EXPOSE 8080
 
