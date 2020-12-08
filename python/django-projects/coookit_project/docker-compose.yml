@@ -19,10 +19,10 @@ services:
     image: coookit-db-img
     volumes:
       - type: bind
-        source: ./pg_backup
+        source: /app/pg_backup
         target: /pg_backup
       - type: bind
-        source: ./pgdata
+        source: /app/pgdata
         target: /var/lib/postgresql/11/main
     environment:
       - PGDATA=/var/lib/postgresql/11/main
@@ -44,14 +44,14 @@ services:
         - UWSGI_CHDIR=/usr/local/lib/python2.7/site-packages/coookit
         - PYTHONPATH=/usr/local/lib/python2.7/site-packages
         - PG_HOST=db-host
-        - PG_PORT=5432
-        - PG_USER=coookit
-        - PG_PASS=coookit
-        - PG_DB_NAME=coookit
+        - PG_PORT=<SOME_PORT>
+        - PG_USER=<SOME_USER>
+        - PG_PASS=<SOME_PASS>
+        - PG_DB_NAME=<SOME_NAME>
     image: coookit-app-img
     ports:
-      - "8080:8080"
+        - "127.0.0.1:8080:8080"
     volumes:
       - type: bind
-        source: ./uploads
+        source: /app/uploads
         target: /app/uploads

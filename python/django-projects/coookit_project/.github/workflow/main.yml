@@ -1,0 +1,42 @@
+name: Build and deploy coookit
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker login
+        env:
+          COOOKIT_WORKFLOW_TOKEN: ${{secrets.COOOKIT_WORKFLOW_TOKEN}}
+          USERNAME: ${{ github.actor }}
+          REPO: ghcr.io
+        run: docker login $REPO -u $USERNAME -p $COOOKIT_WORKFLOW_TOKEN
+      - name: Build coookit package
+        run: make package
+      - name: Build Docker images
+        run: docker-compose build
+      - name: Push Docker images
+        run: docker-compose push
+      - name: Clean up artifacts
+        run: make clean
+      - name: Deploy
+        uses: docker://evaneos/ssh-action:0.1.0
+        with:
+          hosts: ${{ secrets.HOST }}
+          user: ${{ secrets.SSH_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          commands: |
+            echo ${{secrets.COOOKIT_WORKFLOW_TOKEN}} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker-compose -f /app/deployment/docker-compose.yml down --rmi all --remove-orphans
+            docker-compose -f /app/deployment/docker-compose.yml pull
+            docker-compose -f /app/deployment/docker-compose.yml up --no-build --detach
