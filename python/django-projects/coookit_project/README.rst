@@ -2,6 +2,7 @@
 How to deploy coookit project
 ==================
 **coookit** is an engineering blog.
+This is a partial copy of my private repo.
 
 Build images locally
 ==============
