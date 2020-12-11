@@ -1,10 +1,10 @@
 from django.shortcuts import render_to_response
-from django.http import Http404
-from coookit.models import *
-from forms import *
+from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
 from django.core import serializers
+
+import models
+import forms
 
 
 def home(request):
@@ -14,10 +14,10 @@ def home(request):
     :return: List of all found articles
     """
     try:
-        articles = Articles.objects.published().values(
+        articles = models.Articles.objects.published().values(
             'id', 'header', 'negative_feedback', 'positive_feedback',
             'article_type', 'thumbnail', 'created_date')
-        article_types = Articles.ARTICLE_TYPES
+        article_types = models.Articles.ARTICLE_TYPES
     except ValueError:
         raise Http404()
     return render_to_response("index.html", locals())
@@ -31,11 +31,10 @@ def read_article(request, article_id):
     :return: article fields
     """
     try:
-        article = Articles.objects.get(id=article_id)
-        form = UserCommentsForm()
+        article = models.Articles.objects.get(id=article_id)
+        form = forms.UserCommentsForm()
     except ValueError:
         # return page with error messages with local variables
-        assert False
         raise Http404()
     return render_to_response("article.html", locals())
 
@@ -50,13 +49,13 @@ def user_comments(request, article_id):
     :return: json response
     """
     if request.method == 'POST':
-        form = UserCommentsForm(request.POST)
+        form = forms.UserCommentsForm(request.POST)
         if form.is_valid():
-            new_comment = UserComments(text=request.POST['comment'], article_id_id=int(article_id))
+            new_comment = models.UserComments(text=request.POST['comment'], article_id_id=int(article_id))
             new_comment.save()
             return HttpResponse('<h3>done</h3>')
     if request.method == 'GET':
-        data = serializers.serialize("json", UserComments.objects.filter(article_id=article_id))
+        data = serializers.serialize("json", models.UserComments.objects.filter(article_id=article_id))
         return HttpResponse(data, content_type='application/json')
     else:
         return HttpResponse({}, content_type='application/json')

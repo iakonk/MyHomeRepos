@@ -22,13 +22,29 @@ function clean_up() {
 
 function build_images() {
     echo 'Building docker images'
-    docker-compose up --remove-orphans --always-recreate-deps --force-recreate
+    docker build \
+          --force-rm \
+          --build-arg DEV="1" \
+          --build-arg UWSGI_CHDIR=/home/coookit \
+          --build-arg DJANGO_SETTINGS_MODULE=coookit.settings \
+          --build-arg PYTHONPATH=/usr/local/lib/python2.7/site-packages \
+          --file docker/app/Dockerfile \
+          --tag coookit-app-img .
     echo '==========================================================='
 }
 
+function start_app_locally() {
+    docker run -d --name coookit-app --volume $PWD:/home --publish "8080:8080" coookit-app-img
+    echo '==========================================================='
+}
+
+
 # main section
+# exit as soon as exit code -eq 1
+set -e
 clean_up
 make package
 build_images
+start_app_locally
 make clean
 

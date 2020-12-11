@@ -1,9 +1,25 @@
-{% extends "headers.html" %} {% load staticfiles %} {% load thumbnail %} {% block article_body %}<style>.detailBox{background-color:#222;color:#999;float:left;width:100%;height:100%}.titleBox{background-color:rgba(255,255,255,.9);padding:10px}.titleBox label{color:#444;margin:0;display:inline-block}.commentBox{padding:10px;border-top:1px dotted #bbb}.actionBox .form-group:first-child,.commentBox .form-group:first-child{width:80%}.actionBox .form-group:nth-child(2),.commentBox .form-group:nth-child(2){width:18%}.actionBox .form-group *{width:100%}.actionBox .form-group textarea{max-height:70px;background-color:#111;border:0}.actionBox button,.actionBox button:active,.actionBox button:hover,.actionBox button:link,.actionBox button:visited{width:15%;margin-left:30%;background-color:#D2322D;color:#fff;font-weight:700}.taskDescription{margin-top:10px 0}div.authorInfo{border-top:1px dotted #bbb;border-bottom:1px dotted #bbb; margin-top: 10%;}.authorInfo p{float:right}.commentList{padding:0;list-style:none;max-height:200px;overflow:auto}.commentList li{margin:0;margin-top:10px;background-color:#111;border:0}.commentList li>div{display:table-cell}.commenterImage{width:30px;margin-right:5px;height:100%;float:left}.commenterImage img{width:100%;border-radius:50%}.commentText p{margin:0}.sub-text{color:#aaa;font-family:verdana;font-size:10px}.actionBox{border-top:1px dotted #bbb;padding:10px}</style><section><div class=container><div class=box><img id=img_header src="{{ MEDIA_URL }}/{{ article.header_image }}"alt=""><div class=card-block><h6 class=card-title>published: {{ article.created_date }} | modified: {{ article.modified_date }}</h6></div><div class="center gap"><div class="caption center"><h1>{{ article.header }}</h1></div></div><div class=row><div class=col-md-12>{{ article.content|safe }}</div></div><div class=authorInfo><img src="{% static 'images/about-icon-md.png' %}"width=80 height=80><p>Author:</div></div></div></section><section id=contact><div class=container><div class=box><div class=row><div class=detailBox><form action="{% url 'user_comments' article.id%}"method=POST>{% csrf_token %}<div class=commentBox><p class=taskDescription>Please be polite here <img src="{% static 'images/128-21.png' %}"width=40 height=40></div><div class=actionBox><ul class=commentList></ul><div class=col-sm-12><div class=form-group>{{ form.comment }}</div><button class="btn btn-default">Comment</button></div></div></form></div></div></div></div></section><script id=userComments type=text/x-jQuery-tmpl><li>
-    <div class="commenterImage">
-        <img src="{% static 'images/icon-members.png' %}" />
+{% load staticfiles %}
+{% load thumbnail %}
+{% block article_body %}
+
+<!-- Header -->
+<div class="modal-header">
+    <div class="content-section-heading">
+        <h3 class="modal-title" >{{ article.header }}</h3>
     </div>
-    <div class="commentText">
-        <p class="">${text}</p>
-        <span class="date sub-text">Answered on: ${created_date}</span>
-    </div>
-    </li></script><script>function load_comments(t){$.ajax({type:"GET",url:t,dataType:"json",success:function(t){$(".commentList").empty(),$.each(t,function(t,o){line={text:o.fields.text,created_date:o.fields.created_date},$("#userComments").tmpl(line).appendTo(".commentList")})}})}$(document).ready(function(){$(".navbar-nav a").click(function(t){t.preventDefault(),window.open($(this).attr("href"),"_self")});var t=$(".detailBox > form").attr("action");load_comments(t),$(".detailBox > form").submit(function(t){var o=$(this).attr("action"),e=$(this).serialize();$.ajax({url:o,type:"POST",data:e,success:function(t){$("#id_comment").val(""),load_comments(o)}}),t.preventDefault()})})</script>{% endblock %}
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<!-- Body -->
+<div class="modal-body">
+    <img class="img-fluid rounded mx-auto d-block mt-5" src="{{ MEDIA_URL }}/{{ article.header_image }}" alt="">
+    <div class="col col-lg-12 mt-5">{{ article.content|safe }}</div>
+</div>
+
+<!-- Close btn-->
+<div class="modal-footer">
+    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 FROM python:2
 
+ARG DEV
 ARG DJANGO_SETTINGS_MODULE
 ARG UWSGI_CHDIR
 ARG PYTHONPATH
@@ -8,7 +9,8 @@ ARG PG_PORT
 ARG PG_USER
 ARG PG_PASS
 ARG PG_DB_NAME
-ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
+ENV DEV=$DEV \
+    DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
     UWSGI_CHDIR=$UWSGI_CHDIR \
     PYTHONPATH=$PYTHONPATH \
     PG_HOST=$PG_HOST \
@@ -49,15 +51,13 @@ RUN useradd coookit \
                 /var/log/uwsgi \
                 /var/log/django \
                 /var/cache/nginx \
-    && make install \
     && chown --recursive coookit:coookit /var/log/uwsgi \
                                          /var/log/django \
                                          /var/log/nginx \
                                          /var/run/uwsgi \
                                          /var/run/nginx \
                                          /var/cache/nginx \
-    && chmod +x ./entrypoint.sh \
-    && rm -f ./requirements.txt ./coookit-*.tar.gz
+    && chmod +x ./entrypoint.sh
 
 COPY --chown=coookit:coookit etc/nginx.conf etc/supervisord.conf etc/uwsgi.ini /app/etc/
 COPY docker/app/uwsgi docker/app/django /etc/logrotate.d/

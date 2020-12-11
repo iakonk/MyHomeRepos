@@ -1,1 +1,217 @@
-{% extends "headers.html" %} {% load staticfiles %} {% load thumbnail %} {% load home_extras %} {% block main_content %}<section id=main-slider class=carousel><ol class=carousel-indicators><li data-target=#main-slider data-slide-to=0 class=active><li data-target=#main-slider data-slide-to=1><li data-target=#main-slider data-slide-to=2></ol><div class=carousel-inner><div class="item active"><div class=container><div class=carousel-content><h1>Work on work you love :)</h1></div></div></div><div class=item><div class=container><div class=carousel-content><h1>Share experience world wide, learn from experience world wide</h1></div></div></div><div class=item><div class=container><div class=carousel-content><h1>Keep things simple. Simple is beautiful.</h1></div></div></div></div><a class=prev href=#main-slider data-slide=prev><i class=icon-angle-left></i></a><a class=next href=#main-slider data-slide=next><i class=icon-angle-right></i></a></section>{% for type in article_types %}<section id="{{ type.1 }}"><div class=container><div class=box><div class="center gap"><h2>{{ type.1 }}</h2></div><div class=row>{% for article in articles|filter_list_by:type.0 %}<div class="thumbnail col-xs-2 col-xs-2 img-hover"style=height:300px;width:200px><div class="caption center"><a href="{% url 'read_article' article.id %}"><img class="img-responsive img-thumbnail"src="{{ article.thumbnail }}"alt="{{ article.header }}"></a><h5><a href=#>{{ article.header }}</a></h5><h6>published: {{ article.created_date }}</h6></div></div>{% endfor %}</div></div></div></section>{% endfor %}<section id=contact><div class=container><div class=box><div class=row><div class=col-sm-6><h1>Contact Team</h1><p>Dear Sender, you can send email to us. Your opinion is valuable. We will send a feedback in a shortest time possible. Thank you in advance!<div class="status alert alert-success"style=display:none></div><form id=main-contact-form class=contact-form name=contact-form method=post action="{% url 'send_email' %}"role=form><div class=row><div class=col-sm-6><div class=form-group><input class=form-control required placeholder="Please specify your Name"name=auth_name></div></div><div class=col-sm-6><div class=form-group><input type=email class=form-control required placeholder="Your Email address"name=reply_to></div></div></div><div class=row><div class=col-sm-12><div class=form-group><textarea name=message id=message required class=form-control rows=8 placeholder=Message></textarea></div><div class=form-group><button type=submit class="btn btn-danger btn-lg">Send Message</button></div></div></div></form></div><div class=col-sm-6><h1>About us</h1><div class=row><p>There are a lot of great sources with simple and easy-to-use "How to" instructions and Forums, such as:<ul><li><a href=http://www.cyberciti.biz/ >nixCraft</a><li><a href=https://www.digitalocean.com>DigitalOcean</a><li><a href=http://www.thegeekstuff.com/ >The Geek stuff</a><li><a href=http://stackoverflow.com/ >StackOverflow</a></ul><img src="{% static 'images/we-are.jpg' %}"class=img-circle width=150px height=130px style=float:left> This space was destined for sharing latest IT solutions in DevOps area and interesting technical decisions, which are not described anywhere. If you know interesting details about widely used technology, we are asking you to share it with others :) It could save a time for someone and, we believe, could help to destroy unnecessary complex level in many projects - where everyone promotes and chooses its favorite thing, everyone rolling its own scripts, so amount of scripts growing fast, and, finally, successful deployment secret dies with developer :)</div><h1>Connect with us</h1><div class=row><div class=col-md-6><ul class=social><li><a href=#><i class="icon-facebook icon-social"></i>Facebook</a><li><a href=mailto:coookitteam@gmail.com><i class="icon-google-plus icon-social"></i>Google Plus</a></ul></div><div class=col-md-6><ul class=social><li><a href=#><i class="icon-linkedin icon-social"></i>Linkedin</a><li><a href=#><i class="icon-twitter icon-social"></i>Twitter</a></ul></div></div></div></div></div></div></section>{% endblock %}
+{% load staticfiles %}
+{% load home_extras %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Stylish Portfolio - Start Bootstrap Template</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- Custom Fonts -->
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href="{% static 'vendor/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link href="{% static 'css/stylish-portfolio.css' %}" rel="stylesheet">
+</head>
+
+<body id="page-top">
+  <!-- Navigation -->
+  <a class="menu-toggle rounded" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+      <li class="sidebar-brand">
+        <a class="js-scroll-trigger" href="#page-top">Start Coookit</a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a class="js-scroll-trigger" href="#page-top">Home</a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a class="js-scroll-trigger" href="#about">About</a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a class="js-scroll-trigger" href="#deployment">Deployment</a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a class="js-scroll-trigger" href="#development">Development</a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a class="js-scroll-trigger" href="#networking">Network</a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a class="js-scroll-trigger" href="#other">Other</a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a class="js-scroll-trigger" href="#contact">Contact</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
+  <header class="masthead d-flex"></header>
+
+  <!-- About -->
+  <section class="content-section bg-light" id="about">
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-lg-10 mx-auto">
+          <h2>This is an engineering blog. Here are some details about it:</h2>
+          <p class="lead mb-5">Technologies: python 2.7, Django, PostgreSQL, docker-compose. Hosted at: Hetzner.</p>
+          <a class="btn btn-dark btn-xl js-scroll-trigger" href="#src">Find Out More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Source code -->
+  <section class="content-section bg-primary text-white text-center" id="src">
+    <div class="container">
+      <div class="content-section-heading">
+        <h3 class="text-secondary mb-0">Project source code on</h3>
+        <h2 class="mb-5">GitHub</h2>
+      </div>
+      <div class="row text-center">
+        <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
+          <span class="service-icon rounded-circle mx-auto mb-3">
+            <a href="https://github.com/iakonk/MyHomeRepos/blob/master/python/django-projects/coookit_project/.github/workflow/main.yml"
+               style="text-decoration: none;"><i class="icon-puzzle"></i></a>
+          </span>
+          <h4>
+            <strong>Git workflow main</strong>
+          </h4>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
+          <span class="service-icon rounded-circle mx-auto mb-3">
+            <a href="https://github.com/iakonk/MyHomeRepos/blob/master/python/django-projects/coookit_project/docker-compose.yml"
+               style="text-decoration: none;"><i class="icon-organization"></i></a>
+          </span>
+          <h4>
+            <strong>Docker-compose main</strong>
+          </h4>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+          <span class="service-icon rounded-circle mx-auto mb-3">
+            <a href="https://github.com/iakonk/MyHomeRepos/tree/master/python/django-projects/coookit_project/coookit"
+               style="text-decoration: none;"><i class="icon-heart"></i></a>
+          </span>
+          <h4>
+            <strong>Django root</strong>
+          </h4>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+          <span class="service-icon rounded-circle mx-auto mb-3">
+            <a href="https://github.com/iakonk/MyHomeRepos/tree/master/python/django-projects/coookit_project"
+               style="text-decoration: none;"><i class="icon-home"></i></a>
+          </span>
+          <h4>
+            <strong>Project root</strong>
+          </h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--  Callout -->
+  <section class="callout">
+      <div class="container text-center">
+        <h2 class="mx-auto mb-5">Nice to Meet
+          <em>Ya</em>
+          !</h2>
+        <a class="btn btn-primary btn-xl js-scroll-trigger" href="#networking">Start reading</a>
+      </div>
+    </section>
+
+  <!-- Article types -->
+  {% for type in article_types %}
+  <section class="content-section" id={{type.1}}>
+    <div class="container">
+      <div class="content-section-heading text-center">
+        <h2 class="mb-5">{{type.1}}</h2>
+      </div>
+      <div class="row no-gutters">
+        {% for article in articles|filter_list_by:type.0 %}
+          <div class="col-lg-6">
+            <a class="portfolio-item" data-toggle="modal" data-target="#data" data-load-url="{% url 'read_article' article.id %}">
+              <div class="caption">
+                <div class="caption-content">
+                  <div class="h2">{{article.header}}</div>
+                  <p class="mb-0">published:{{article.created_date}}</p>
+                </div>
+              </div>
+              <img class="img-fluid" src={{article.thumbnail}} alt="">
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endfor %}
+
+  <!-- Modal -->
+  <div class="modal fade" id="data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+      <div class="modal-content">{% block article_body %}{% endblock %}</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer text-center" id="contact">
+    <div class="container">
+      <ul class="list-inline mb-5">
+        <li class="list-inline-item">
+          <a class="social-link rounded-circle text-white mr-3" href="https://join.skype.com/invite/h99W9RdHJf6i">
+            <i class="icon-social-skype"></i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="social-link rounded-circle text-white mr-3" href="www.linkedin.com/in/yana-konkina-02019558">
+            <i class="icon-social-linkedin"></i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="social-link rounded-circle text-white mr-3" href="mailto:konkina.iana@gmail.com">
+            <i class="icon-social-google"></i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="social-link rounded-circle text-white" href="https://github.com/iakonk/MyHomeRepos">
+            <i class="icon-social-github"></i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="social-link rounded-circle text-white" href="https://leetcode.com/iakonk/">
+            <i class="icon-badge"></i>
+          </a>
+        </li>
+      </ul>
+      <p class="text-muted small mb-0">Copyright &copy; Coookit 2016</p>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded js-scroll-trigger" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="{% static 'js/stylish-portfolio.js' %}"></script>
+
+</body>
+</html>

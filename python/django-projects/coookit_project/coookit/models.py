@@ -44,18 +44,15 @@ class Articles(TimeStampModel):
     # Bootstrap Navigation bar on templates/headers.html page base on below values
     # Make sure , href id is the same as below
     ARTICLE_TYPES = (
-        ('M', 'Monitoring'),
-        ('V', 'Visualizing'),
-        ('P', 'Provisioning'),
-        ('N', 'Networking'),
-        ('W', 'Web'),
         ('D', 'Deployment'),
+        ('V', 'Development'),
+        ('N', 'Networking'),
         ('O', 'Other'),
     )
     header = models.CharField('Header', max_length=100)
     header_image = ThumbnailerImageField('Image header', resize_source=dict(size=(1024, 250), crop="0,15"),
                                          upload_to=settings.MEDIA_URL)
-    thumbnail = ThumbnailerImageField('Thumbnail', resize_source=dict(size=(500, 400)), upload_to=settings.MEDIA_URL)
+    thumbnail = ThumbnailerImageField('Thumbnail', resize_source=dict(size=(700, 467)), upload_to=settings.MEDIA_URL)
     negative_feedback = models.IntegerField('Negative Feedback count', default=0)
     positive_feedback = models.IntegerField('Positive Feedback count', default=0)
     article_type = models.CharField('Article type', max_length=2, choices=ARTICLE_TYPES, default=ARTICLE_TYPES[0][0])
