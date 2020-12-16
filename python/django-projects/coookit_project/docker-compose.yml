@@ -16,7 +16,7 @@ services:
       dockerfile: docker/db/Dockerfile
       labels:
         image-name: coookit-db-img
-    image: coookit-db-img
+    image: ghcr.io/iakonk/coookit-db-img:latest
     volumes:
       - type: bind
         source: /app/pg_backup
@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: docker/app/Dockerfile
       labels:
-        image-name: coookit-app-img
+        image: ghcr.io/iakonk/coookit-app-img:latest
       args:
         - DJANGO_SETTINGS_MODULE=coookit.settings
         - UWSGI_CHDIR=/usr/local/lib/python2.7/site-packages/coookit
@@ -50,7 +50,7 @@ services:
         - PG_DB_NAME=<SOME_NAME>
     image: coookit-app-img
     ports:
-        - "127.0.0.1:8080:8080"
+        - "127.0.0.1:8888:88888"
     volumes:
       - type: bind
         source: /app/uploads

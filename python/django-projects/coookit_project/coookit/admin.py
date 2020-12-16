@@ -1,16 +1,30 @@
 from django.contrib import admin
-from coookit.models import Articles, UserComments
 from django_summernote.admin import SummernoteModelAdmin
 
-
-class ArticlesAdmin(SummernoteModelAdmin):
-        list_display = ('header', 'negative_feedback', 'positive_feedback', 'content', 'article_type', 'created_date', 'modified_date', 'publish')
-        list_filter = ['header']
+from coookit.models import (Documents,
+                            Comments)
 
 
-class UserCommentsAdmin(admin.ModelAdmin):
-        pass
+class DisabledLogger(object):
+    def log_addition(self, *args):
+        return
+
+    def log_change(self, *args):
+        return
+
+    def log_deletion(self, *args):
+        return
 
 
-admin.site.register(Articles, ArticlesAdmin)
-admin.site.register(UserComments, UserCommentsAdmin)
+class DocumentsAdmin(DisabledLogger, SummernoteModelAdmin):
+    list_filter = ['header']
+
+
+class CommentsAdmin(DisabledLogger, admin.ModelAdmin):
+    list_display = [
+        "text"
+    ]
+
+
+admin.site.register(Documents, DocumentsAdmin)
+admin.site.register(Comments, CommentsAdmin)

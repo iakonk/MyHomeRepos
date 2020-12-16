@@ -1,95 +1,53 @@
-from django.shortcuts import render_to_response
-from django.http import Http404, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
-import models
-import forms
+from coookit.models import (Documents,
+                            Comments)
+from coookit.forms import UserCommentsForm
 
 
 def home(request):
-    """
-    Gets as few data as possible for a better performance
-    :param request:
-    :return: List of all found articles
-    """
-    try:
-        articles = models.Articles.objects.published().values(
-            'id', 'header', 'negative_feedback', 'positive_feedback',
-            'article_type', 'thumbnail', 'created_date')
-        article_types = models.Articles.ARTICLE_TYPES
-    except ValueError:
-        raise Http404()
-    return render_to_response("index.html", locals())
+    docs_on_page = 8
+    init_page_num = 1
+
+    section = request.GET.get('section')
+    page_number = request.GET.get('page', init_page_num)
+    topics = Documents.objects.order_by('topic').visible().values_list('topic', flat=True).distinct()
+
+    aggr = {}
+    documents = Documents.objects.visible()
+    for one_doc in documents:
+        aggr.setdefault(one_doc.topic, [])
+        aggr[one_doc.topic].append(one_doc)
+
+    for topic, docs in aggr.items():
+        paginator = Paginator(docs, docs_on_page)
+        if topic == section:
+            page = paginator.get_page(page_number)
+        else:
+            page = paginator.get_page(init_page_num)
+        aggr[topic] = page
+    return render(request, "index.html", {'documents': aggr, 'topics': topics})
 
 
-def read_article(request, article_id):
-    """
-    Read article from database by ID
-    :param request:
-    :param article_id: id of the article
-    :return: article fields
-    """
-    try:
-        article = models.Articles.objects.get(id=article_id)
-        form = forms.UserCommentsForm()
-    except ValueError:
-        # return page with error messages with local variables
-        raise Http404()
-    return render_to_response("article.html", locals())
+def document_read(request, doc_id):
+    doc = get_object_or_404(Documents, id=doc_id)
+    return render(request, "document.html", {'document': doc})
 
 
 @csrf_exempt
 def user_comments(request, article_id):
-    """
-    Read or post user comments
-    Accept only valid comments
-    :param request:
-    :param article_id: comments will be always bound to article_id
-    :return: json response
-    """
     if request.method == 'POST':
-        form = forms.UserCommentsForm(request.POST)
+        form = UserCommentsForm(request.POST)
         if form.is_valid():
-            new_comment = models.UserComments(text=request.POST['comment'], article_id_id=int(article_id))
+            new_comment = Comments(text=request.POST['comment'], article_id_id=int(article_id))
             new_comment.save()
             return HttpResponse('<h3>done</h3>')
     if request.method == 'GET':
-        data = serializers.serialize("json", models.UserComments.objects.filter(article_id=article_id))
+        data = serializers.serialize("json", Comments.objects.filter(article_id=article_id))
         return HttpResponse(data, content_type='application/json')
     else:
         return HttpResponse({}, content_type='application/json')
-
-
-def email2_moderator(request):
-    """
-    Request is triggered from "Contact Form" on index.html or when reading an article.
-    User provides own email/name/message body.
-    Moderators email stay always hidden.
-    :param request:
-    :return: send email to the moderator
-    """
-    import smtplib
-    if request.method == 'POST':
-        reply_to = request.POST['reply_to']
-        auth_name = request.POST['auth_name']
-        message = request.POST['message']
-
-        GMAIL_USER = '@gmail.com'
-        GMAIL_PWD = ''
-        SUBJECT = 'Email sent from coookit , author: %s' % auth_name
-
-        # Prepare actual message
-        message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
-        """ % (reply_to, ", ".join(GMAIL_USER), SUBJECT, message)
-
-        try:
-            server = smtplib.SMTP("smtp.gmail.com", 587)
-            server.ehlo()
-            server.starttls()
-            server.login(GMAIL_USER, GMAIL_PWD)
-            server.sendmail(reply_to, GMAIL_USER, message)
-            server.close()
-            print('successfully sent the mail')
-        except:
-            print("failed to send mail")

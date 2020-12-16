@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% load home_extras %}
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +31,7 @@
   <nav id="sidebar-wrapper">
     <ul class="sidebar-nav">
       <li class="sidebar-brand">
-        <a class="js-scroll-trigger" href="#page-top">Start Coookit</a>
+          <a class="js-scroll-trigger" href=#{{topics|first}}>Start Coookit</a>
       </li>
       <li class="sidebar-nav-item">
         <a class="js-scroll-trigger" href="#page-top">Home</a>
@@ -39,18 +39,11 @@
       <li class="sidebar-nav-item">
         <a class="js-scroll-trigger" href="#about">About</a>
       </li>
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#deployment">Deployment</a>
-      </li>
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#development">Development</a>
-      </li>
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#networking">Network</a>
-      </li>
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#other">Other</a>
-      </li>
+      {% for topic in topics %}
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#{{ topic }}">{{ topic }}</a>
+        </li>
+      {% endfor %}
       <li class="sidebar-nav-item">
         <a class="js-scroll-trigger" href="#contact">Contact</a>
       </li>
@@ -65,8 +58,10 @@
     <div class="container text-center">
       <div class="row">
         <div class="col-lg-10 mx-auto">
-          <h2>This is an engineering blog. Here are some details about it:</h2>
-          <p class="lead mb-5">Technologies: python 2.7, Django, PostgreSQL, docker-compose. Hosted at: Hetzner.</p>
+          <h2>This is an engineering blog or a Documentation Center for personal use only. Here are some details about it:</h2>
+          <p class="lead mb-5">Technologies: python 3.7, Django 3.1, PostgreSQL, docker-compose.
+            <a href="https://github.com/StartBootstrap/startbootstrap-stylish-portfolio">Bootstrap template</a>
+          </p>
           <a class="btn btn-dark btn-xl js-scroll-trigger" href="#src">Find Out More</a>
         </div>
       </div>
@@ -127,40 +122,84 @@
         <h2 class="mx-auto mb-5">Nice to Meet
           <em>Ya</em>
           !</h2>
-        <a class="btn btn-primary btn-xl js-scroll-trigger" href="#networking">Start reading</a>
+          <a class="btn btn-primary btn-xl js-scroll-trigger" href=#{{topics|first}}>Start reading</a>
       </div>
     </section>
 
   <!-- Article types -->
-  {% for type in article_types %}
-  <section class="content-section" id={{type.1}}>
+  {% for topic_name, page in documents.items %}
+  <section class="content-section" id={{topic_name}}>
     <div class="container">
       <div class="content-section-heading text-center">
-        <h2 class="mb-5">{{type.1}}</h2>
+        <h2 class="mb-5">{{topic_name}}</h2>
       </div>
+
+      <!--documents list-->
       <div class="row no-gutters">
-        {% for article in articles|filter_list_by:type.0 %}
+        {% for one_doc in page %}
           <div class="col-lg-6">
-            <a class="portfolio-item" data-toggle="modal" data-target="#data" data-load-url="{% url 'read_article' article.id %}">
+            <a class="portfolio-item" data-toggle="modal" data-target="#data" data-load-url="{% url 'document_read' one_doc.id %}">
               <div class="caption">
                 <div class="caption-content">
-                  <div class="h2">{{article.header}}</div>
-                  <p class="mb-0">published:{{article.created_date}}</p>
+                  <div class="h2">{{ one_doc.header|title }}</div>
+                  <p class="mb-0">published:{{ one_doc.created_date }}</p>
                 </div>
               </div>
-              <img class="img-fluid" src={{article.thumbnail}} alt="">
+              <img class="img-fluid" src={{one_doc.thumbnail}} alt="">
             </a>
           </div>
         {% endfor %}
       </div>
+
+      <!-- documents pagination     -->
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+
+          {% if page.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page.previous_page_number }}&section={{topic_name}}#{{topic_name}}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link" href="#{{topic_name}}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+          {% endif %}
+
+          {% for num in page.number|range:page.paginator.num_pages %}
+            <li class="page-item"><a class="page-link" href="?page={{num}}&section={{topic_name}}#{{topic_name}}">{{num}}</a></li>
+          {% endfor %}
+
+          {% if page.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page.next_page_number }}&section={{topic_name}}#{{topic_name}}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link" href="#{{topic_name}}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+
     </div>
   </section>
   {% endfor %}
 
   <!-- Modal -->
-  <div class="modal fade" id="data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal fade" id="data" tabindex="-1" role="dialog" aria-labelledby="ModalLongTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
-      <div class="modal-content">{% block article_body %}{% endblock %}</div>
+      <div class="modal-content">{% block document %}{% endblock %}</div>
     </div>
   </div>
 
@@ -174,23 +213,8 @@
           </a>
         </li>
         <li class="list-inline-item">
-          <a class="social-link rounded-circle text-white mr-3" href="www.linkedin.com/in/yana-konkina-02019558">
-            <i class="icon-social-linkedin"></i>
-          </a>
-        </li>
-        <li class="list-inline-item">
           <a class="social-link rounded-circle text-white mr-3" href="mailto:konkina.iana@gmail.com">
             <i class="icon-social-google"></i>
-          </a>
-        </li>
-        <li class="list-inline-item">
-          <a class="social-link rounded-circle text-white" href="https://github.com/iakonk/MyHomeRepos">
-            <i class="icon-social-github"></i>
-          </a>
-        </li>
-        <li class="list-inline-item">
-          <a class="social-link rounded-circle text-white" href="https://leetcode.com/iakonk/">
-            <i class="icon-badge"></i>
           </a>
         </li>
       </ul>

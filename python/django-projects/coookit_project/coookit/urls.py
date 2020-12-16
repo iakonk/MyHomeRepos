@@ -1,26 +1,24 @@
-from django.conf.urls import include, url
 from django.contrib import admin
-from coookit import views as home_views
 from django.conf import settings
+from django.conf.urls import include, url
 from django.conf.urls.static import static
-from os import path
+
+from coookit import views
+
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 
     # Main content
-    url(r'^$', home_views.home, name='home'),
+    url(r'^$', views.home, name='home'),
 
     # read the article
-    url(r'^article/(?P<article_id>[0-9]+)/$', home_views.read_article, name='read_article'),
+    url(r'^document_read/(?P<doc_id>[0-9]+)/$', views.document_read, name='document_read'),
 
     # work with user comments
-    url(r'user_comments/(?P<article_id>[0-9]+)/$', home_views.user_comments, name='user_comments'),
-
-    # send email
-    url(r'^send_email/$', home_views.email2_moderator, name='send_email'),
+    url(r'user_comments/(?P<article_id>[0-9]+)/$', views.user_comments, name='user_comments'),
 
     # Django summernote editor
     url(r'^summernote/', include('django_summernote.urls')),
 
-] + static(settings.MEDIA_URL, document_root=path.join(settings.MEDIA_ROOT, settings.MEDIA_URL))
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT + settings.MEDIA_URL)

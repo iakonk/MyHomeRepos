@@ -1,15 +1,16 @@
-from django.template import Library
-
-register = Library()
+from django.template.defaultfilters import register
 
 
-@register.filter
-def filter_list_by(obj_list, string):
-    """
-    Function filters given dictionary by given article type
-    :param obj_list:  objects list
-    :param string: two-characters type of the article
-    :return: list of objects where object.article_type == string
-    """
-    return [obj for obj in obj_list if obj['article_type'] == string]
-register.filter('filter_list_by', filter_list_by)
+@register.filter(name='dict_key')
+def dict_key(d, k):
+    return d[k]
+
+
+@register.filter(name='in')
+def inside(key, dict_):
+    return key in dict_
+
+
+@register.filter(name='range')
+def filter_range(start, end):
+    return range(start, end + 1)

@@ -1,11 +1,11 @@
-{% load staticfiles %}
+{% load static %}
 {% load thumbnail %}
-{% block article_body %}
+{% block document %}
 
 <!-- Header -->
 <div class="modal-header">
     <div class="content-section-heading">
-        <h3 class="modal-title" >{{ article.header }}</h3>
+        <h3 class="modal-title" >{{ document.header }}</h3>
     </div>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -14,8 +14,8 @@
 
 <!-- Body -->
 <div class="modal-body">
-    <img class="img-fluid rounded mx-auto d-block mt-5" src="{{ MEDIA_URL }}/{{ article.header_image }}" alt="">
-    <div class="col col-lg-12 mt-5">{{ article.content|safe }}</div>
+    <img class="img-fluid rounded mx-auto d-block mt-1" src="{{ MEDIA_URL }}/{{ document.thumbnail }}" alt="">
+    <div class="col col-lg-12 mt-1">{{ document.body|safe }}</div>
 </div>
 
 <!-- Close btn-->

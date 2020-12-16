@@ -1,4 +1,4 @@
-FROM python:2
+FROM python:3.7
 
 ARG DEV
 ARG DJANGO_SETTINGS_MODULE
@@ -22,7 +22,6 @@ ENV DEV=$DEV \
     PYTHONUNBUFFERED=1  \
     PACKAGES="\
         nginx \
-        python-setuptools \
     "
 
 WORKDIR /app
@@ -35,7 +34,6 @@ RUN echo 'deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic ngi
     && apt install -y $PACKAGES \
     && apt-get clean \
     && find /etc/nginx/conf.d -name '*.conf' -delete \
-    && easy_install pip \
     && pip install --upgrade pip
 
 COPY requirements.txt Makefile dist/coookit-*.tar.gz docker/app/entrypoint.sh ./

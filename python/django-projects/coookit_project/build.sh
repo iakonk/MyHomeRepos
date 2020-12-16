@@ -27,14 +27,19 @@ function build_images() {
           --build-arg DEV="1" \
           --build-arg UWSGI_CHDIR=/home/coookit \
           --build-arg DJANGO_SETTINGS_MODULE=coookit.settings \
-          --build-arg PYTHONPATH=/usr/local/lib/python2.7/site-packages \
+          --build-arg PYTHONPATH=/usr/local/lib/python3.7/dist-packages/ \
           --file docker/app/Dockerfile \
           --tag coookit-app-img .
     echo '==========================================================='
 }
 
 function start_app_locally() {
-    docker run -d --name coookit-app --volume $PWD:/home --publish "8080:8080" coookit-app-img
+    docker run -d \
+          --name coookit-app \
+          --volume $PWD:/home \
+          --volume $PWD/uploads:/app/uploads \
+          --publish "8080:8080" \
+          coookit-app-img
     echo '==========================================================='
 }
 

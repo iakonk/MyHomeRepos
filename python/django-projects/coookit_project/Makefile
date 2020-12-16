@@ -7,11 +7,6 @@ package: setup.py
 install-deps: requirements.txt
 	pip install --no-cache-dir --upgrade --requirement requirements.txt
 
-.PHONY: fix-permissions
-fix-permissions:
-	ln -s $(UWSGI_CHDIR)/manage.py /usr/bin/manage.py
-	chmod +x /usr/bin/manage.py
-
 .PHONY: prod-install
 prod-install:
 	echo 'Setting PROD environment'
@@ -28,20 +23,19 @@ dev-install:
 
 .PHONY: post-install
 post-install:
-	make fix-permissions
 	make collectstatic
 	make database
 
 .PHONY: collectstatic
 collectstatic: $(UWSGI_CHDIR)/manage.py
-	manage.py collectstatic --noinput
+	django-admin collectstatic --noinput
 
 .PHONY: database
-database: $(UWSGI_CHDIR)/manage.py
-	manage.py makemigrations
-	manage.py migrate
-	manage.py makemigrations coookit
-	manage.py migrate coookit
+database:
+	django-admin makemigrations
+	django-admin migrate
+	django-admin makemigrations coookit
+	django-admin migrate coookit
 
 .PHONY: clean
 clean:

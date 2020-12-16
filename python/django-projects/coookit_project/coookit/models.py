@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
 
 
@@ -18,59 +17,51 @@ class TimeStampModel(models.Model):
         abstract = True
 
 
-class ArticlesQuerySet(models.QuerySet):
+class DocumentsQuerySet(models.QuerySet):
     """
     Filter articles by default - only published=True
     """
-    def published(self):
-        return self.filter(publish=True)
+    def visible(self):
+        return self.filter(visible=True)
 
 
-class Articles(TimeStampModel):
-    """
-    Model describes article fields
-    Each Article has required field "ARTICLE_TYPE" for filtering purpose
-    ARTICLE_VALID_TYPES list contains all possible choices
-
-    Markup handling for Django using the TinyMCE:
-        https://django-tinymce.readthedocs.org/en/latest/usage.html
-
-    Each Header image will have additional thumbnail image,
-    That will be generated when article is saved to speed up the process
-        https://pypi.python.org/pypi/easy-thumbnails
-        https://easy-thumbnails.readthedocs.org/en/2.1/usage/#overview
-    """
-
-    # Bootstrap Navigation bar on templates/headers.html page base on below values
-    # Make sure , href id is the same as below
-    ARTICLE_TYPES = (
-        ('D', 'Deployment'),
-        ('V', 'Development'),
-        ('N', 'Networking'),
-        ('O', 'Other'),
+class Documents(TimeStampModel):
+    DEVELOPMENT = 'Development'
+    DEPLOYMENT = 'Deployment'
+    NETWORKING = 'Networking'
+    OTHER = 'Other'
+    TOPIC_CHOICES = (
+        (DEVELOPMENT, DEVELOPMENT),
+        (DEPLOYMENT, DEPLOYMENT),
+        (NETWORKING, NETWORKING),
+        (OTHER, OTHER),
     )
-    header = models.CharField('Header', max_length=100)
-    header_image = ThumbnailerImageField('Image header', resize_source=dict(size=(1024, 250), crop="0,15"),
-                                         upload_to=settings.MEDIA_URL)
-    thumbnail = ThumbnailerImageField('Thumbnail', resize_source=dict(size=(700, 467)), upload_to=settings.MEDIA_URL)
-    negative_feedback = models.IntegerField('Negative Feedback count', default=0)
-    positive_feedback = models.IntegerField('Positive Feedback count', default=0)
-    article_type = models.CharField('Article type', max_length=2, choices=ARTICLE_TYPES, default=ARTICLE_TYPES[0][0])
-    content = models.TextField('Article body')
-    publish = models.BooleanField('Public visibility', default=False)
+    thumbnail = ThumbnailerImageField('Thumbnail',
+                                      resize_source=dict(size=(700, 467)),
+                                      upload_to='uploads')
+    likes = models.IntegerField('Likes', default=0)
+    dislikes = models.IntegerField('Dislikes', default=0)
+    header = models.CharField(max_length=100)
+    topic = models.CharField(max_length=15, choices=TOPIC_CHOICES, default=OTHER)
+    body = models.TextField()
+    visible = models.BooleanField('Public visibility', default=False)
 
-    objects = ArticlesQuerySet.as_manager()
+    objects = DocumentsQuerySet.as_manager()
 
     def __unicode__(self):
         return self.header
 
+    def __str__(self):
+        return self.header
+
     class Meta:
         ordering = ["-modified_date"]
+        unique_together = ("topic", "header")
 
 
-class UserComments(TimeStampModel):
+class Comments(TimeStampModel):
     text = models.TextField('User Comments')
-    article_id = models.ForeignKey(Articles, default=None)
+    doc_id = models.ForeignKey(Documents, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.text
