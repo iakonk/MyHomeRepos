@@ -1,55 +1,7 @@
+{% extends 'base.html' %}
 {% load static %}
 {% load home_extras %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>Coookit</title>
-
-  <!-- Bootstrap Core CSS -->
-  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
-  <!-- Custom Fonts -->
-  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-  <link href="{% static 'vendor/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet">
-
-  <!-- Custom CSS -->
-  <link href="{% static 'css/stylish-portfolio.css' %}" rel="stylesheet">
-</head>
-
-<body id="page-top">
-  <!-- Navigation -->
-  <a class="menu-toggle rounded" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar-wrapper">
-    <ul class="sidebar-nav">
-      <li class="sidebar-brand">
-          <a class="js-scroll-trigger" href=#{{topics|first}}>Start Coookit</a>
-      </li>
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#page-top">Home</a>
-      </li>
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#about">About</a>
-      </li>
-      {% for topic in topics %}
-        <li class="sidebar-nav-item">
-          <a class="js-scroll-trigger" href="#{{ topic }}">{{ topic }}</a>
-        </li>
-      {% endfor %}
-      <li class="sidebar-nav-item">
-        <a class="js-scroll-trigger" href="#contact">Contact</a>
-      </li>
-    </ul>
-  </nav>
-
+{% block index %}
   <!-- Header -->
   <header class="masthead d-flex"></header>
 
@@ -122,7 +74,7 @@
         <h2 class="mx-auto mb-5">Nice to Meet
           <em>Ya</em>
           !</h2>
-          <a class="btn btn-primary btn-xl js-scroll-trigger" href=#{{topics|first}}>Start reading</a>
+          <a class="btn btn-primary btn-xl js-scroll-trigger" href=/#{{topics|first}}>Start reading</a>
       </div>
     </section>
 
@@ -138,7 +90,7 @@
       <div class="row no-gutters">
         {% for one_doc in page %}
           <div class="col-lg-6">
-            <a class="portfolio-item" data-toggle="modal" data-target="#data" data-load-url="{% url 'document_read' one_doc.id %}">
+            <a class="portfolio-item" href="{% url 'document_read' one_doc.id %}">
               <div class="caption">
                 <div class="caption-content">
                   <div class="h2">{{ one_doc.header|title }}</div>
@@ -152,7 +104,7 @@
       </div>
 
       <!-- documents pagination     -->
-      <nav aria-label="Page navigation example">
+      <nav aria-label="Page navigation">
         <ul class="pagination justify-content-end">
 
           {% if page.has_previous %}
@@ -195,47 +147,4 @@
     </div>
   </section>
   {% endfor %}
-
-  <!-- Modal -->
-  <div class="modal fade" id="data" tabindex="-1" role="dialog" aria-labelledby="ModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
-      <div class="modal-content">{% block document %}{% endblock %}</div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="footer text-center" id="contact">
-    <div class="container">
-      <ul class="list-inline mb-5">
-        <li class="list-inline-item">
-          <a class="social-link rounded-circle text-white mr-3" href="https://join.skype.com/invite/h99W9RdHJf6i">
-            <i class="icon-social-skype"></i>
-          </a>
-        </li>
-        <li class="list-inline-item">
-          <a class="social-link rounded-circle text-white mr-3" href="mailto:konkina.iana@gmail.com">
-            <i class="icon-social-google"></i>
-          </a>
-        </li>
-      </ul>
-      <p class="text-muted small mb-0">Copyright &copy; Coookit 2016</p>
-    </div>
-  </footer>
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded js-scroll-trigger" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Bootstrap core JavaScript -->
-  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
-  <!-- Plugin JavaScript -->
-  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-
-  <!-- Custom scripts for this template -->
-  <script src="{% static 'js/stylish-portfolio.js' %}"></script>
-
-</body>
-</html>
+{% endblock %}

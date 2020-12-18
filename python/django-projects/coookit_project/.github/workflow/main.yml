@@ -23,7 +23,7 @@ jobs:
       - name: Build coookit package
         run: make package
       - name: Build Docker images
-        run: docker-compose build
+        run: docker-compose build --no-cache --force-rm
       - name: Push Docker images
         run: docker-compose push
       - name: Clean up artifacts
@@ -36,7 +36,11 @@ jobs:
           private_key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           commands: |
-            echo ${{secrets.COOOKIT_WORKFLOW_TOKEN}} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker-compose -f /app/deployment/docker-compose.yml down --rmi all --remove-orphans
-            docker-compose -f /app/deployment/docker-compose.yml pull
-            docker-compose -f /app/deployment/docker-compose.yml up --no-build --detach
+            export REPO=ghcr.io
+            cd /tmp
+            git clone https://${{ github.actor }}:${{ secrets.GIT_PASS }}@github.com/${{ github.actor }}/coookit.git
+            echo ${{secrets.COOOKIT_WORKFLOW_TOKEN}} | docker login $REPO -u ${{ github.actor }} --password-stdin
+            docker-compose -f coookit/docker-compose.yml down --rmi all --remove-orphans
+            docker-compose -f coookit/docker-compose.yml pull
+            docker-compose -f coookit/docker-compose.yml up --no-build --detach
+            rm -rf /tmp/coookit

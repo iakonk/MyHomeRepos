@@ -34,8 +34,9 @@ def home(request):
 
 
 def document_read(request, doc_id):
-    doc = get_object_or_404(Documents, id=doc_id)
-    return render(request, "document.html", {'document': doc})
+    topics = Documents.objects.order_by('topic').visible().values_list('topic', flat=True).distinct()
+    document = get_object_or_404(Documents, id=doc_id)
+    return render(request, "document.html", {'document': document, 'topics': topics})
 
 
 @csrf_exempt

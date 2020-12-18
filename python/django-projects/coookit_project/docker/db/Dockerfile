@@ -32,7 +32,6 @@ RUN chmod +x ./entrypoint.sh \
 
 USER postgres
 
-RUN /etc/init.d/postgresql start \
-  && psql --file ./init.sql
+RUN /etc/init.d/postgresql start
 
 ENTRYPOINT ["./entrypoint.sh"]

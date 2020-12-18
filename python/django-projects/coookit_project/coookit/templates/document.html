@@ -1,25 +1,20 @@
+{% extends 'base.html' %}
 {% load static %}
-{% load thumbnail %}
+{% load home_extras %}
+
 {% block document %}
+  <!-- Header -->
+  <header class="masthead d-flex h-50" style="background-image: url( {{MEDIA}}/{{document.thumbnail}} )"></header>
 
-<!-- Header -->
-<div class="modal-header">
-    <div class="content-section-heading">
-        <h3 class="modal-title" >{{ document.header }}</h3>
+  <!-- Document body -->
+  <article class="mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9 col-md-10 mx-auto">
+          {{document.body|safe}}
+        </div>
+      </div>
     </div>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
+  </article>
 
-<!-- Body -->
-<div class="modal-body">
-    <img class="img-fluid rounded mx-auto d-block mt-1" src="{{ MEDIA_URL }}/{{ document.thumbnail }}" alt="">
-    <div class="col col-lg-12 mt-1">{{ document.body|safe }}</div>
-</div>
-
-<!-- Close btn-->
-<div class="modal-footer">
-    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
-</div>
 {% endblock %}

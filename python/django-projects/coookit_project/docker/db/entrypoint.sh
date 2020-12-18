@@ -17,4 +17,7 @@ then
 else
     /usr/lib/postgresql/11/bin/initdb
 fi
+
+/usr/bin/psql --file /init.sql
+
 /usr/lib/postgresql/11/bin/postgres -c config_file=/etc/postgresql/postgresql.conf

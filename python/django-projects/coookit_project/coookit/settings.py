@@ -37,7 +37,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-
+SUMMERNOTE_THEME = 'bs4'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
