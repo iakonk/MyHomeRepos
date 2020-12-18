@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load home_extras %}
+{% load thumbnail %}
 
 {% block document %}
   <!-- Header -->
   <header class="masthead d-flex h-50" style="background-image: url( {{MEDIA}}/{{document.thumbnail}} )"></header>
+
+  <!--Header -->
+  <h2 class="mb-5 mt-5 text-center">{{ document.header|title }}</h2>
 
   <!-- Document body -->
   <article class="mt-5">
@@ -16,5 +20,4 @@
       </div>
     </div>
   </article>
-
 {% endblock %}
