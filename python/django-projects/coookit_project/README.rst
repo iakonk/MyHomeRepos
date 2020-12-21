@@ -9,6 +9,7 @@ Build images locally
 To create a local DEV environment, run the command:
 ``sudo ./build.sh``
 It will destroy already existing images.
+
 Connect to the running containers
 ==============
 ``./connect.sh  [app|db]``
