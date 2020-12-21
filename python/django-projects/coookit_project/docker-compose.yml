@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 
 networks:
   coookit:
@@ -38,19 +38,19 @@ services:
       context: .
       dockerfile: docker/app/Dockerfile
       labels:
-        image: ghcr.io/iakonk/coookit-app-img:latest
+        image-name: coookit-app-img
       args:
         - DJANGO_SETTINGS_MODULE=coookit.settings
-        - UWSGI_CHDIR=/usr/local/lib/python2.7/site-packages/coookit
-        - PYTHONPATH=/usr/local/lib/python2.7/site-packages
+        - UWSGI_CHDIR=/usr/local/lib/python3.7/site-packages/coookit
+        - PYTHONPATH=/usr/local/lib/python3.7/site-packages
         - PG_HOST=db-host
-        - PG_PORT=<SOME_PORT>
-        - PG_USER=<SOME_USER>
-        - PG_PASS=<SOME_PASS>
-        - PG_DB_NAME=<SOME_NAME>
-    image: coookit-app-img
+        - PG_PORT=<PORT>
+        - PG_USER=<USER>
+        - PG_PASS=<PASS>
+        - PG_DB_NAME=coookit
+    image: ghcr.io/iakonk/coookit-app-img:latest
     ports:
-        - "127.0.0.1:8888:88888"
+        - "8080:8080"
     volumes:
       - type: bind
         source: /app/uploads

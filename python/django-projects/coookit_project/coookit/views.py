@@ -15,10 +15,10 @@ def home(request):
 
     section = request.GET.get('section')
     page_number = request.GET.get('page', init_page_num)
-    topics = Documents.objects.order_by('topic').visible().values_list('topic', flat=True).distinct()
+    topics = Documents.objects.visible().order_by('topic').values_list('topic', flat=True).distinct()
 
     aggr = {}
-    documents = Documents.objects.visible()
+    documents = Documents.objects.visible().order_by('topic')
     for one_doc in documents:
         aggr.setdefault(one_doc.topic, [])
         aggr[one_doc.topic].append(one_doc)
@@ -34,7 +34,7 @@ def home(request):
 
 
 def document_read(request, doc_id):
-    topics = Documents.objects.order_by('topic').visible().values_list('topic', flat=True).distinct()
+    topics = Documents.objects.visible().order_by('topic').values_list('topic', flat=True).distinct()
     document = get_object_or_404(Documents, id=doc_id)
     return render(request, "document.html", {'document': document, 'topics': topics})
 
