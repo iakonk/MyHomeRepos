@@ -28,7 +28,7 @@ class DocumentsQuerySet(models.QuerySet):
 class Documents(TimeStampModel):
     DEVELOPMENT = 'Development'
     DEPLOYMENT = 'Deployment'
-    LINUX = 'LINUX'
+    LINUX = 'Linux'
     NETWORKING = 'Networking'
     OTHER = 'Other'
     TOPIC_CHOICES = (

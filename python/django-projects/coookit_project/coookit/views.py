@@ -9,13 +9,17 @@ from coookit.models import (Documents,
 from coookit.forms import UserCommentsForm
 
 
+def _topics_with_documents():
+    return Documents.objects.visible().order_by('topic').values_list('topic', flat=True).distinct()
+
+
 def home(request):
     docs_on_page = 8
     init_page_num = 1
 
     section = request.GET.get('section')
     page_number = request.GET.get('page', init_page_num)
-    topics = Documents.objects.visible().order_by('topic').values_list('topic', flat=True).distinct()
+    topics = _topics_with_documents()
 
     aggr = {}
     documents = Documents.objects.visible().order_by('topic')
@@ -34,7 +38,7 @@ def home(request):
 
 
 def document_read(request, doc_id):
-    topics = Documents.objects.visible().order_by('topic').values_list('topic', flat=True).distinct()
+    topics = _topics_with_documents()
     document = get_object_or_404(Documents, id=doc_id)
     return render(request, "document.html", {'document': document, 'topics': topics})
 

@@ -17,7 +17,7 @@ class DisabledLogger(object):
 
 
 class DocumentsAdmin(DisabledLogger, SummernoteModelAdmin):
-    list_filter = ['header']
+    list_filter = ['header', 'topic']
 
 
 class CommentsAdmin(DisabledLogger, admin.ModelAdmin):
