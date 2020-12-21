@@ -36,7 +36,7 @@ SECRET_KEY = 'gr&-wwwf2m+=t!)h2)1k!#f0d8v5jg-i=_tqp471gk2-u)27t^'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+# X_FRAME_OPTIONS = 'SAMEORIGIN'
 SUMMERNOTE_THEME = 'bs3'
 
 INSTALLED_APPS = [
@@ -58,7 +58,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # it blocks youtube videos
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'coookit.urls'
