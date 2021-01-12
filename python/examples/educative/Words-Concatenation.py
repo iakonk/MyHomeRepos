@@ -9,33 +9,29 @@ Input: String="catfoxcat", Words=["cat", "fox"]
 Output: [0, 3]
 Explanation: The two substring containing both the words are "catfox" & "foxcat".
 """
-from collections import Counter
+from collections import Counter, defaultdict
 
 
 class Solution(object):
     def allConcatenations(self, string, words):
-        words = set(words)
-        start = match = 0
-        step = len(words[0]) * len(words)
         ans = []
 
-        for i in range(0, len(string), step):
-            end = min(i+step, len(string))
-            one_w = string[i:end]
+        w_len, w_cnt, w_freq = len(words[0]), len(words), Counter(words)
+        step = w_len * w_cnt
 
-            if one_w in words:
-                if aggr[one_w] == 0:
-                    
-                else:
-                    aggr[one_w] -= 1
-                match += aggr[one_w] >= 0
+        for i in range((len(string) - step)+1):
+            seen = defaultdict(int)
+            for j in range(0, w_cnt):
+                next_word_index = i + j * w_len
+                word = string[next_word_index: next_word_index + w_len]
+                seen[word] += 1
+                if word not in w_freq or seen[word] > w_freq[word]:
+                    break
+
+            if len(seen) == w_cnt and j+1 == w_cnt:
+                ans.append(i)
+        return ans
 
 
-
-
-            while match == len(words):
-                ans.append(start)
-                lw = words[start]
-                start += 1
-                match -= aggr[lw] == 0
-                aggr[lw] += 1
+ans = Solution().allConcatenations("catfoxcat", ["cat", "fox"])
+assert ans == [0, 3]
