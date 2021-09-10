@@ -5,7 +5,7 @@ django-wysiwyg-redactor==0.5.1
 easy-thumbnails==2.7.1
 Pillow==8.0.1
 psycopg2==2.8.6
-sqlparse==0.4.1
+sqlparse==0.4.2
 Sphinx==3.3.1
 coverage==5.3
 supervisor==4.2.1
