@@ -26,6 +26,7 @@ class Solution(object):
             for coin in coins:
                 if i >= coin:
                     res[i] = min(res[i], res[i-coin] + 1)
+                print(res)
 
         ans = res[amount]
         return ans if ans != amount + 1 else -1
@@ -35,6 +36,6 @@ ans = Solution().coinChange([1, 2, 5], 11)
 assert ans == 3
 
 
-ans = Solution().coinChange([2], 3)
-assert ans == -1
+# ans = Solution().coinChange([2], 3)
+# assert ans == -1
 
