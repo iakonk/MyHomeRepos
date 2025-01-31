@@ -24,3 +24,4 @@ jobs:
         ssh_user: ${{ secrets.COOOKIT_USERNAME }}
         docker_compose_prefix: coookit_project
         docker_compose_down: 'true'
+        docker_compose_filename: 'python/django-projects/coookit_project/docker-compose.yml'
