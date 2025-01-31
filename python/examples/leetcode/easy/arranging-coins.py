@@ -15,6 +15,8 @@ The coins can form the following rows:
 ¤ ¤
 
 Because the 3rd row is incomplete, we return 2.
+
+https://leetcode.com/problems/arranging-coins/submissions/
 """
 
 

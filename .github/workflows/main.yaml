@@ -1,0 +1,27 @@
+name: Run Continuous Delivery pipeline
+
+on:
+  push:
+    branches:
+      - add-github-actions
+    paths:
+      - 'python/django-projects/coookit_project/**'
+      - '.github/workflows/**'
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: alex-ac/github-action-ssh-docker-compose@master
+      name: Docker-Compose Remote Deployment
+      with:
+        ssh_host: ${{ secrets.COOOKIT_HOST }}
+        ssh_private_key: ${{ secrets.COOOKIT_KEY }}
+        ssh_user: ${{ secrets.COOOKIT_USERNAME }}
+        docker_compose_prefix: coookit_project
+        docker_compose_down: 'true'
+        docker_compose_filename: 'python/django-projects/coookit_project/docker-compose.yml'

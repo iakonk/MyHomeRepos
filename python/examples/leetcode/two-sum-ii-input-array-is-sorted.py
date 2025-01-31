@@ -1,4 +1,6 @@
 """
+https://leetcode.com/problems/two-sum/submissions/
+
 Given an array of integers that is already sorted in ascending order, find two numbers such that they add up
  to a specific target number.
 
@@ -20,27 +22,16 @@ class Solution(object):
         :type target: int
         :rtype: List[int]
         """
-        for idx,  n1 in enumerate(numbers, 1):
+        map_ = {}
 
-            if n1 > target:
-                break
+        for ind, num in enumerate(numbers):
+            diff = target - num
+            if diff not in map_:
+                map_[num] = ind
+            else:
+                if map_[diff] != ind:
+                    return [ind, map_[diff]]
+        return -1
 
-            start, end = idx, len(numbers)
-
-            while start < end:
-                mid = start + (end-start)//2
-                if numbers[mid] + n1 > target:
-                    end = mid
-                elif numbers[mid] + n1 < target:
-                    start = mid + 1
-                else:
-                    return [idx, mid + 1]
-
-
-ans = Solution().twoSum([2,7,11,15], 9)
-assert ans == [1, 2]
-
-ans = Solution().twoSum([2, 3, 4], 6)
-assert ans ==[1,3]
 
 

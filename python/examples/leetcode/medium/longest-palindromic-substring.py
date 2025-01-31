@@ -18,7 +18,7 @@ class Solution(object):
         max_len = 0
         pal = ""
         for i in range(len(s)):
-            j = i +1
+            j = i + 1
             while j < len(s):
                 if is_pal(s[i:j]) and j-i > max_len:
                     max_len = j-1

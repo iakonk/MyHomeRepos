@@ -1,11 +1,14 @@
 """
+https://leetcode.com/problems/4sum/
+
 Input: [4, 1, 2, -1, 1, -3], target=1
 Output: [-3, -1, 1, 4], [-3, 1, 1, 2]
 Explanation: Both the quadruplets add up to the target.
 """
 
+
 class Solution(object):
-    def findQuadrupleSum(self, arr, target):
+    def fourSum(self, arr, target):
         arr.sort()
         quadruplets = []
 
