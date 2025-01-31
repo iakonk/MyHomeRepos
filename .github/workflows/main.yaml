@@ -3,6 +3,9 @@
 name: Run Continuous Delivery pipeline
 
 on:
+  push:
+    branches:
+    pull_request:
   paths:
     - 'python/django-projects/coookit_project/**'
     - '.github/workflows/**'
