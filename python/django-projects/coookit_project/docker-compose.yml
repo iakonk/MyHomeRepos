@@ -50,7 +50,7 @@ services:
         - PG_DB_NAME=coookit
     image: ghcr.io/iakonk/coookit-app-img:latest
     ports:
-        - "8080:8080"
+        - "80:8080"
     volumes:
       - type: bind
         source: /app/uploads
